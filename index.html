@@ -1,0 +1,1632 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Newton's Second Law – AP Physics 1</title>
+<style>
+:root{
+  --bg:#f3f5fa; --card:#ffffff; --ink:#1b2233; --muted:#586377; --line:#dde3ee; --soft:#f8f9fc;
+  --brand:#2952c8; --brand-2:#1c3a8f; --brand-soft:#e9effd;
+  --good:#17804a; --good-soft:#e3f4ea; --bad:#c0392b; --bad-soft:#fbe9e7;
+  --warn:#9a5a00; --warn-soft:#fff3dc;
+  --force:#e06a12; --net:#7a3cc2; --vel:#17804a; --weight:#44506a; --normal:#1878b0;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--ink);font:17px/1.6 system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif}
+button{font:inherit}
+.hidden{display:none!important}
+/* top bar */
+.topbar{position:sticky;top:0;z-index:30;display:flex;align-items:center;gap:12px;padding:10px 18px;background:var(--brand-2);color:#fff;flex-wrap:wrap}
+.topbar .brand{font-weight:700;letter-spacing:.01em}
+.topbar .who{margin-left:auto;font-size:.95rem;opacity:.95}
+.topbar .badge{background:#ffd166;color:#3b2a00;border-radius:999px;padding:2px 10px;font-size:.8rem;font-weight:700}
+.tbtn{background:rgba(255,255,255,.14);color:#fff;border:1px solid rgba(255,255,255,.35);border-radius:8px;padding:6px 12px;cursor:pointer}
+.tbtn:hover{background:rgba(255,255,255,.25)}
+/* nav */
+.nav{display:flex;gap:6px;flex-wrap:wrap;padding:10px 18px;background:#fff;border-bottom:1px solid var(--line)}
+.pill{display:flex;align-items:center;gap:6px;border:1.5px solid var(--line);background:#fff;border-radius:999px;padding:5px 12px;font-size:.88rem;cursor:pointer;color:var(--ink)}
+.pill .n{display:inline-grid;place-items:center;width:22px;height:22px;border-radius:50%;background:var(--soft);font-weight:700;font-size:.8rem}
+.pill.locked{opacity:.5;cursor:not-allowed}
+.pill.current{border-color:var(--brand);background:var(--brand-soft)}
+.pill.current .n{background:var(--brand);color:#fff}
+.pill.done .n{background:var(--good);color:#fff}
+/* layout */
+main{max-width:940px;margin:0 auto;padding:18px 16px 90px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:22px 24px;margin:18px 0;box-shadow:0 1px 2px rgba(20,30,60,.05)}
+.sec-head{margin:10px 2px 4px}
+.kicker{color:var(--brand);font-weight:700;font-size:.85rem;text-transform:uppercase;letter-spacing:.06em}
+h1{font-size:1.75rem;line-height:1.25;margin:.15em 0 .2em}
+h2{font-size:1.28rem;line-height:1.3;margin:0 0 .5em}
+h3{font-size:1.06rem;margin:1.2em 0 .4em}
+p{margin:.5em 0}
+.muted{color:var(--muted)}
+.small{font-size:.9rem}
+.center{text-align:center}
+/* callouts */
+.fact{border-left:5px solid var(--brand);background:var(--brand-soft);padding:9px 14px;border-radius:8px;margin:10px 0}
+.fact::before{content:"FACT";display:block;font-size:.7rem;font-weight:800;letter-spacing:.1em;color:var(--brand)}
+.mistake{border-left:5px solid var(--bad);background:var(--bad-soft);padding:10px 14px;border-radius:8px;margin:12px 0}
+.mistake::before{content:"THE MISTAKE";display:block;font-size:.7rem;font-weight:800;letter-spacing:.1em;color:var(--bad)}
+.tip{border-left:5px solid var(--warn);background:var(--warn-soft);padding:10px 14px;border-radius:8px;margin:12px 0}
+.tip::before{content:"TIP";display:block;font-size:.7rem;font-weight:800;letter-spacing:.1em;color:var(--warn)}
+.keybox{border:2px solid var(--net);border-radius:12px;padding:12px 16px;margin:12px 0;background:#f6f0fd}
+.keybox h3{margin:.1em 0 .4em;color:var(--net)}
+.problem{background:#f1f3f8;border:1px solid var(--line);border-radius:10px;padding:10px 14px;margin:10px 0}
+.problem .label{font-size:.72rem;font-weight:800;letter-spacing:.1em;color:var(--muted);display:block}
+.model{border:1px solid #cdd6ea;border-radius:10px;padding:10px 14px;background:#fff;margin:10px 0}
+.model .f{color:var(--brand);font-weight:700}
+.model .r{color:var(--net);font-weight:700}
+.tag{display:inline-block;padding:0 7px;border-radius:6px;font-weight:700;font-size:.92em}
+.tag.net{background:#efe5fb;color:var(--net)}
+.tag.force{background:#fde9da;color:#a3480a}
+.tag.vel{background:var(--good-soft);color:var(--vel)}
+.tag.normal{background:#e2f0f9;color:var(--normal)}
+.tag.weight{background:#e8ebf1;color:var(--weight)}
+/* questions */
+.q{border:1px solid var(--line);border-radius:12px;padding:14px 16px;margin:14px 0;background:var(--soft)}
+.q.done{border-color:#a9d9bb;background:var(--good-soft)}
+.qtext{font-weight:600;margin-bottom:6px}
+.opt{display:block;width:100%;text-align:left;padding:9px 14px;margin:7px 0;border:1.5px solid #cfd6e4;border-radius:10px;background:#fff;cursor:pointer;color:var(--ink);line-height:1.45}
+.opt:hover:not(:disabled){border-color:var(--brand)}
+.opt:disabled{cursor:default}
+.opt.right{border-color:var(--good);background:#d6f0df}
+.opt.wrong{border-color:var(--bad);background:var(--bad-soft)}
+.fb{margin-top:8px;font-size:.96rem}
+.fb.good{color:var(--good);font-weight:600}
+.fb.bad{color:var(--bad)}
+.row{display:flex;flex-wrap:wrap;align-items:center;gap:8px}
+input[type=text],select,textarea{font:inherit;padding:7px 10px;border:1.5px solid #c3cbdb;border-radius:8px;background:#fff;color:var(--ink)}
+input[type=text]:focus,select:focus,textarea:focus{outline:2px solid var(--brand);outline-offset:1px}
+input.num{width:110px}
+input.ok,select.ok{border-color:var(--good);background:#eefaf2}
+input.no,select.no{border-color:var(--bad);background:#fff4f2}
+textarea{width:100%;min-height:64px;resize:vertical}
+.btn{border:1.5px solid var(--brand);background:#fff;color:var(--brand);border-radius:10px;padding:8px 16px;cursor:pointer;font-weight:600}
+.btn:hover:not(:disabled){background:var(--brand-soft)}
+.btn.primary{background:var(--brand);color:#fff}
+.btn.primary:hover:not(:disabled){background:var(--brand-2)}
+.btn:disabled{opacity:.45;cursor:not-allowed}
+.btn.big{padding:12px 22px;font-size:1.05rem}
+.seg{display:inline-flex;border:1.5px solid #c3cbdb;border-radius:9px;overflow:hidden}
+.seg button{border:0;background:#fff;padding:6px 12px;cursor:pointer;color:var(--ink)}
+.seg button+button{border-left:1.5px solid #c3cbdb}
+.seg button.on{background:var(--brand);color:#fff}
+.inline-sel{margin:4px 0}
+.gi{padding:8px 0;border-bottom:1px dashed var(--line)}
+.gi:last-of-type{border-bottom:0}
+.checks label{display:flex;gap:10px;align-items:flex-start;margin:7px 0;cursor:pointer}
+.checks input{margin-top:5px;width:18px;height:18px}
+/* sims */
+.sim{border:1px solid var(--line);border-radius:12px;padding:12px;background:#fff}
+.sim svg,.sim canvas{display:block;width:100%;height:auto;background:#fbfcff;border-radius:8px}
+.sim svg.fbd-svg{max-width:520px;margin:0 auto}
+.fb .model{color:var(--ink);font-weight:400}
+.fact-pick label.o{display:flex;gap:10px;align-items:flex-start;padding:8px 12px;border:1.5px solid #cfd6e4;border-radius:10px;margin:6px 0;background:#fff;cursor:pointer;line-height:1.45}
+.fact-pick label.o input{margin-top:5px}
+.fact-pick label.o.right{border-color:var(--good);background:#d6f0df}
+.fact-pick label.o.wrong{border-color:var(--bad);background:var(--bad-soft)}
+.reason-fill{background:#fff;border:1.5px solid #cfd6e4;border-radius:10px;padding:8px 14px;line-height:2.5;margin:6px 0}
+.reason-fill select,.reason-fill input{margin:0 3px}
+.step-lab{font-weight:800}
+.step-lab.f{color:var(--brand)} .step-lab.r{color:var(--net)}
+.bank{background:#fff;border:1.5px solid #cfd6e4;border-radius:10px;padding:8px 14px;margin:8px 0}
+.bank div{margin:4px 0;font-weight:400}
+.reason-fill input,.reason-fill select{line-height:1.3}
+.ctl-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:12px;margin-top:12px}
+.fctl{border:1px solid var(--line);border-radius:10px;padding:10px 12px;background:var(--soft)}
+.fctl-title{font-weight:700;margin-bottom:6px}
+.fctl input[type=range]{width:100%}
+.readout{margin-top:10px;padding:10px 14px;border-radius:10px;background:#f6f0fd;border:1px solid #dccbf3}
+.status{display:flex;flex-wrap:wrap;gap:8px 18px;margin-top:10px;font-size:.95rem}
+.status b{font-variant-numeric:tabular-nums}
+.chip{display:inline-block;padding:2px 10px;border-radius:999px;font-weight:700;font-size:.9rem;background:#eef1f7}
+.chip.up{background:#d6f0df;color:var(--good)}
+.chip.down{background:var(--bad-soft);color:var(--bad)}
+.trial{display:flex;align-items:center;gap:10px;padding:8px 12px;border:1px solid var(--line);border-radius:10px;margin:8px 0;background:var(--soft)}
+.trial .st{margin-left:auto;font-weight:700;color:var(--muted);white-space:nowrap}
+.trial.ok{background:var(--good-soft);border-color:#a9d9bb}
+.trial.ok .st{color:var(--good)}
+.elev-wrap{display:grid;grid-template-columns:minmax(220px,300px) 1fr;gap:14px}
+@media (max-width:640px){.elev-wrap{grid-template-columns:1fr}}
+.motion-list label{display:flex;gap:8px;align-items:center;padding:5px 8px;border-radius:8px;cursor:pointer}
+.motion-list label:hover{background:var(--soft)}
+.motion-list .tried{margin-left:auto;color:var(--good);font-weight:700;font-size:.85rem}
+.eq{font-size:1.1rem;display:flex;flex-wrap:wrap;align-items:center;gap:6px;margin:8px 0}
+.eq input{width:80px;text-align:center}
+.fbd-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:10px;margin-top:10px}
+.fbd-grid label{display:flex;flex-direction:column;gap:4px;font-weight:600;font-size:.95rem}
+/* finish panel */
+.finish{background:#fff;border:2px dashed #b9c4dc;border-radius:14px;padding:18px 22px;margin:26px 0}
+.finish h3{margin-top:0}
+.checklist{list-style:none;padding:0;margin:8px 0 14px}
+.checklist li{display:flex;gap:10px;align-items:center;padding:3px 0}
+.checklist .box{width:22px;height:22px;border-radius:6px;border:2px solid #b9c4dc;display:inline-grid;place-items:center;font-size:.8rem;font-weight:800;flex:none}
+.checklist li.ok .box{background:var(--good);border-color:var(--good);color:#fff}
+.checklist li.ok{color:var(--good)}
+/* start */
+.hero{background:linear-gradient(135deg,#1c3a8f,#2952c8);color:#fff;border-radius:16px;padding:26px 28px;margin-top:10px}
+.hero h1{font-size:2rem;margin:0}
+.hero p{opacity:.95}
+.two{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:16px}
+.two .card{margin:0}
+.field{display:flex;flex-direction:column;gap:4px;margin:10px 0}
+.field input{width:100%}
+.err{color:var(--bad);font-size:.93rem;min-height:1.2em}
+/* modal */
+.modal{position:fixed;inset:0;background:rgba(15,22,40,.55);display:grid;place-items:center;z-index:60;padding:16px}
+.modal-card{background:#fff;border-radius:16px;max-width:560px;width:100%;padding:24px 26px;box-shadow:0 20px 60px rgba(0,0,0,.25);max-height:90vh;overflow:auto}
+.code{font:700 2rem/1.2 ui-monospace,Menlo,Consolas,monospace;letter-spacing:.12em;text-align:center;background:var(--brand-soft);border:2px dashed var(--brand);border-radius:12px;padding:12px;margin:12px 0;color:var(--brand-2)}
+.modal-actions{display:flex;gap:10px;justify-content:flex-end;flex-wrap:wrap;margin-top:14px}
+/* drawer */
+.drawer{position:fixed;top:0;right:0;height:100%;width:min(420px,92vw);background:#fff;z-index:50;box-shadow:-8px 0 30px rgba(0,0,0,.18);transform:translateX(105%);transition:transform .25s ease;overflow:auto;padding:18px 20px 40px}
+.drawer.open{transform:none}
+.drawer h2{display:flex;align-items:center;justify-content:space-between}
+.drawer h3{color:var(--brand);margin:1em 0 .3em;font-size:1rem}
+.drawer ul{margin:0;padding-left:20px}
+.drawer li{margin:4px 0;font-size:.95rem}
+/* CFU */
+.cfu-q{border:1px solid var(--line);border-radius:12px;padding:14px 16px;margin:12px 0;background:#fff}
+.cfu-q .qn{font-weight:800;color:var(--brand);margin-right:6px}
+.cfu-q.right{border-color:var(--good);background:var(--good-soft)}
+.cfu-q.wrong{border-color:var(--bad);background:#fff8f7}
+.cfu-q label.o{display:flex;gap:10px;align-items:flex-start;padding:7px 10px;border:1.5px solid #d3d9e6;border-radius:9px;margin:6px 0;background:#fff;cursor:pointer;line-height:1.45}
+.cfu-q label.o input{margin-top:5px}
+.explain{margin-top:8px;font-size:.95rem;color:#7a241b}
+.result{border-radius:14px;padding:18px 22px;margin:18px 0;font-size:1.05rem}
+.result.pass{background:var(--good-soft);border:2px solid var(--good)}
+.result.fail{background:var(--bad-soft);border:2px solid var(--bad)}
+.attempts{display:flex;gap:16px;flex-wrap:wrap;font-size:.95rem;color:var(--muted)}
+/* certificate */
+.certificate{background:#fffdf6;border:10px double #b8913a;border-radius:10px;padding:34px 30px;text-align:center;margin:18px 0;color:#2a2410}
+.cert-kicker{letter-spacing:.2em;text-transform:uppercase;font-weight:700;color:#8a6a1f;font-size:.85rem}
+.cert-title{font:700 2.1rem/1.2 Georgia,"Times New Roman",serif;margin:6px 0 14px}
+.cert-name{font:italic 700 2rem/1.3 Georgia,"Times New Roman",serif;border-bottom:2px solid #b8913a;display:inline-block;padding:0 24px 4px;margin:6px 0 10px}
+.cert-topic{font:700 1.4rem/1.3 Georgia,serif;margin:6px 0}
+.cert-meta{display:flex;justify-content:space-between;flex-wrap:wrap;gap:10px;margin-top:24px;font-size:.95rem;border-top:1px solid #e0cf9f;padding-top:12px}
+@media print{
+  body *{visibility:hidden}
+  #certBox,#certBox *{visibility:visible}
+  #certBox{position:absolute;left:0;top:0;width:100%}
+}
+@media (max-width:560px){ .card{padding:18px 16px} h1{font-size:1.45rem} .hero h1{font-size:1.6rem} }
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <div class="brand">AP Physics 1 · Newton's Second Law</div>
+  <div class="who" id="who"></div>
+  <button class="tbtn hidden" id="teachBtn" type="button">Teacher tools</button>
+  <button class="tbtn" id="factBtn" type="button">Fact Sheet</button>
+</header>
+<nav class="nav hidden" id="nav" aria-label="Sections"></nav>
+
+<main>
+
+<!-- ============ START ============ -->
+<section id="start" class="page">
+  <div class="hero">
+    <div class="kicker" style="color:#cfe0ff">Independent Study Activity · about 45 minutes</div>
+    <h1>Newton's Second Law</h1>
+    <p>Net force, acceleration, and the direction of motion — the same content as the class slides, one step at a time.</p>
+  </div>
+
+  <div class="card">
+    <h2>By the end, you will be able to:</h2>
+    <ul>
+      <li>Find the net force on an object by adding and subtracting forces.</li>
+      <li>Justify an answer the AP way: a <b>Fact</b>, then <b>Reasoning</b>.</li>
+      <li>Explain why the net force does <b>not</b> tell you which way an object is moving.</li>
+      <li>Use the two-step process to calculate an object's acceleration.</li>
+      <li>Figure out what a scale reads in an elevator — the class check for understanding.</li>
+    </ul>
+    <h3>How this works</h3>
+    <ul>
+      <li>There are <b>6 sections</b>. Each one unlocks after you finish the one before it.</li>
+      <li>At the end of each section you get a <b>checkpoint code</b>. <b>Write it down.</b> If the page reloads, come back here, type the <b>same name</b> and your <b>newest code</b>, and you'll jump back to where you were.</li>
+      <li>Open the <b>Fact Sheet</b> (top right) any time. Your justifications should use these facts almost word-for-word.</li>
+      <li>Section 6 is the final check. You need <b>80%</b> to pass and earn your certificate.</li>
+    </ul>
+  </div>
+
+  <div class="two">
+    <div class="card">
+      <h2>Starting for the first time?</h2>
+      <div class="field"><label for="newName">Your first and last name</label>
+        <input type="text" id="newName" autocomplete="off" placeholder="e.g. Maria Lopez"></div>
+      <div class="err" id="newErr"></div>
+      <button class="btn primary big" id="startBtn" type="button">Start the activity</button>
+    </div>
+    <div class="card">
+      <h2>Coming back?</h2>
+      <div class="field"><label for="resName">Your name (type it the same way as before)</label>
+        <input type="text" id="resName" autocomplete="off"></div>
+      <div class="field"><label for="resCode">Your newest checkpoint code</label>
+        <input type="text" id="resCode" autocomplete="off" placeholder="ABC-DEF"></div>
+      <div class="err" id="resErr"></div>
+      <button class="btn big" id="resumeBtn" type="button">Jump back in</button>
+    </div>
+  </div>
+  <details class="card small" id="teacherBox">
+    <summary style="cursor:pointer;font-weight:600">Teacher access</summary>
+    <div class="field"><label for="tCode">Teacher code</label><input type="text" id="tCode" autocomplete="off"></div>
+    <div class="err" id="tErr"></div>
+    <button class="btn" id="tBtn" type="button">Unlock all sections</button>
+  </details>
+</section>
+
+<!-- ============ SECTION 1 ============ -->
+<section id="s1" class="page hidden">
+  <div class="sec-head"><div class="kicker">Section 1 of 6 · about 8 minutes</div><h1>Net Force and Free-Body Diagrams</h1></div>
+  <div class="card">
+    <h2>What is net force?</h2>
+    <p>A <b>force</b> is a push or a pull that acts on an object. Forces are measured in <b>newtons (N)</b>.</p>
+    <p>Most of the time, more than one force acts on an object at once. The <b>net force</b> is the overall force: the single force that could replace all the others and have the same effect. Three facts tell you how to find it:</p>
+    <div class="fact">Forces acting in the same direction add together to determine the net force.</div>
+    <div class="fact">Forces acting in opposite directions subtract to determine the net force.</div>
+    <div class="fact">The larger force points in the direction of the net force.</div>
+  </div>
+  <div class="card">
+    <h2>Try it: Net Force Explorer</h2>
+    <p>Change the size and direction of the two <span class="tag force">forces</span> on the box. Watch the purple <span class="tag net">net force</span> arrow and the math underneath.</p>
+    <div id="nfx"></div>
+  </div>
+  <div class="card">
+    <h2>Free-body diagrams</h2>
+    <p>A <b>free-body diagram</b> (FBD) shows every force acting on one object. On your fact sheet, a free-body diagram includes:</p>
+    <ol>
+      <li>A labeled arrow representing each force. Each arrow begins on the object and points in the direction in which the force acts.</li>
+      <li>A list of the forces, indicating the object applying the force and the object experiencing the force.</li>
+    </ol>
+    <p>Make the arrow for a bigger force longer than the arrow for a smaller force.</p>
+    <div class="problem"><span class="label">EXAMPLE FROM CLASS</span>A cart experiences a 3 N force to the left and a 2 N force to the right. Draw a free-body diagram with the forces labeled.</div>
+    <div id="fbd"></div>
+  </div>
+  <div class="card">
+    <h2>Quick check</h2>
+    <div id="s1q"></div>
+  </div>
+  <div class="finish" data-sec="1"></div>
+</section>
+
+<!-- ============ SECTION 2 ============ -->
+<section id="s2" class="page hidden">
+  <div class="sec-head"><div class="kicker">Section 2 of 6 · about 7 minutes</div><h1>Justify Your Answer With a Fact</h1></div>
+  <div class="card">
+    <h2>How we justify answers</h2>
+    <p>On the AP exam, a correct answer with no explanation earns little or no credit. In this class, every justification has two parts:</p>
+    <div class="two" style="gap:12px">
+      <div class="model"><span class="f">Fact:</span> A fact of physics, stated almost word-for-word from your fact sheet. Always start here.</div>
+      <div class="model"><span class="r">Reasoning:</span> Apply that fact to <i>this</i> problem. Say what the fact means for these forces and this object.</div>
+    </div>
+    <p>Keep it short. "Justify your answer" means about two or three sentences, not a paragraph.</p>
+    <h3>Example from class</h3>
+    <div class="problem"><span class="label">QUESTION</span>A cart experiences a 3 N force to the left and a 2 N force to the right. Which way is the net force on the cart? Justify your answer with a fact.</div>
+    <div class="model">
+      <p><span class="f">Fact:</span> Forces acting in opposite directions subtract to determine the net force. The larger force points in the direction of the net force.</p>
+      <p><span class="r">Reasoning:</span> The larger force points to the left, so the net force is to the left. Forces acting in opposite directions subtract, so the net force is 3 − 2, which is 1 newton left.</p>
+    </div>
+    <p class="muted small">Notice that the Reasoning uses the actual numbers and directions from the problem. It connects the fact to this cart.</p>
+  </div>
+  <div class="card">
+    <h2>Build a justification</h2>
+    <div class="problem"><span class="label">QUESTION</span>Same cart: 3 N to the left and 2 N to the right. Which way is the cart's <b>acceleration</b>? Justify your answer with a fact.</div>
+    <div id="s2build"></div>
+  </div>
+  <div class="card">
+    <h2>Match each question to its fact</h2>
+    <p>Every justification starts with the right fact. For each question, choose the fact you would use to justify the answer.</p>
+    <div id="s2match"></div>
+  </div>
+  <div class="card">
+    <h2>Your turn: complete the justification</h2>
+    <p>Pick the fact, then fill in the blanks to finish the reasoning.</p>
+    <div id="s2write"></div>
+  </div>
+  <div class="card">
+    <h2>Spot the full-credit answer</h2>
+    <div id="s2spot"></div>
+  </div>
+  <div class="finish" data-sec="2"></div>
+</section>
+
+<!-- ============ SECTION 3 ============ -->
+<section id="s3" class="page hidden">
+  <div class="sec-head"><div class="kicker">Section 3 of 6 · about 11 minutes</div><h1>Which Way Is It Moving?</h1></div>
+  <div class="card">
+    <h2>Make a prediction</h2>
+    <div class="problem"><span class="label">QUESTION FROM CLASS</span>A cart experiences a 3 N force to the left and a 2 N force to the right. Which way is the cart <b>moving</b>?</div>
+    <div id="s3poll"></div>
+  </div>
+  <div class="card" data-until="s3-poll"><p class="muted" style="margin:0">Make your prediction above to unlock the rest of this section.</p></div>
+  <div class="card hidden" data-after="s3-poll">
+    <h2>Acceleration facts</h2>
+    <p>You already know the net force on this cart is 1 N to the left, so its acceleration is to the left. But what does acceleration actually tell you? Here are the acceleration facts from Unit 1:</p>
+    <div class="fact">Acceleration tells how much an object's speed changes in one second.</div>
+    <div class="fact">When an object speeds up, its acceleration is in the direction of motion.</div>
+    <div class="fact">When an object slows down, its acceleration is opposite the direction of motion.</div>
+    <p>Acceleration is about how the speed is <b>changing</b>. It is not the same thing as the direction the object is going. Let's test that with a simulation.</p>
+  </div>
+  <div class="card hidden" data-after="s3-poll" data-resize="msim">
+    <h2>Simulation: same forces, different starts</h2>
+    <p>The sim cart has a mass of 1 kg. Set the forces, give the cart a starting push (its starting velocity), and press <b>Play</b>. The dots at the top are a <b>motion diagram</b>: one dot every 0.5 s. The farther apart the dots, the faster the cart is moving.</p>
+    <div id="msim"></div>
+    <h3>Record what you saw</h3>
+    <div id="mobs"></div>
+  </div>
+  <div class="card hidden" data-after="s3-poll" data-until="s3-obs"><p class="muted" style="margin:0">Run both trials and record what you saw to unlock the next part.</p></div>
+  <div class="card hidden" data-after="s3-obs">
+    <h2>So which way is the cart moving?</h2>
+    <p>From the forces alone, <b>you can't tell.</b> In both trials the net force was 1 N to the left, but the cart moved left in one trial and right in the other.</p>
+    <div class="mistake">Thinking the net force (or acceleration) tells you the direction of motion. Acceleration doesn't say anything about which way something is moving, unless you also know whether it is speeding up or slowing down.</div>
+    <div class="keybox">
+      <h3>To know which way an object is moving, you need TWO things:</h3>
+      <ol style="margin:0">
+        <li>The direction of the acceleration (the same as the direction of the net force), <b>and</b></li>
+        <li>Whether the object is speeding up or slowing down.</li>
+      </ol>
+      <p style="margin-bottom:0">A net force to the <b>left</b> means the object is either <b>moving left and speeding up</b>, or <b>moving right and slowing down</b>.</p>
+    </div>
+    <h3>Practice</h3>
+    <div id="s3grid"></div>
+  </div>
+  <div class="card hidden" data-after="s3-obs" data-until="s3-grid"><p class="muted" style="margin:0">Finish the practice questions above to unlock the next part.</p></div>
+  <div class="card hidden" data-after="s3-grid">
+    <h2>Could the cart be moving left at 1 m/s?</h2>
+    <div class="problem"><span class="label">QUESTION FROM CLASS</span>A cart experiences a 3 N force to the left and a 2 N force to the right. Could the cart be moving left at 1 m/s? If so, provide a situation in which this is possible. Justify your answer with an acceleration fact.</div>
+    <div id="s3left"></div>
+  </div>
+  <div class="card hidden" data-after="s3-grid" data-until="s3-lw"><p class="muted" style="margin:0">Finish the justification above to unlock the last part.</p></div>
+  <div class="card hidden" data-after="s3-lw">
+    <h2>Could it move at a constant speed?</h2>
+    <div class="problem"><span class="label">QUESTION FROM CLASS</span>A cart experiences a 3 N force to the left and a 2 N force to the right. Could the cart be moving left at a <b>constant speed</b> of 1 m/s? Justify your answer with an acceleration fact.</div>
+    <div id="s3const"></div>
+  </div>
+  <div class="finish" data-sec="3"></div>
+</section>
+
+<!-- ============ SECTION 4 ============ -->
+<section id="s4" class="page hidden">
+  <div class="sec-head"><div class="kicker">Section 4 of 6 · about 8 minutes</div><h1>Calculating Acceleration: The Two-Step Process</h1></div>
+  <div class="card">
+    <h2>Mass and weight</h2>
+    <p>Before you calculate, you need to know the difference between mass and weight:</p>
+    <div class="fact">Mass tells how much material is contained in an object. The units of mass are kilograms.</div>
+    <div class="fact">Weight is the force of a planet acting on an object (in newtons).</div>
+    <div class="fact">On Earth's surface, the gravitational field g is 10 N/kg. This means that on Earth, 1 kg of mass weighs 10 N.</div>
+    <p><b>W = mg</b>, where g on Earth is <b>10 m/s every second</b>.</p>
+    <div id="s4w"></div>
+  </div>
+  <div class="card">
+    <h2>Solving problems with unbalanced forces</h2>
+    <div class="keybox">
+      <h3>The two-step problem-solving process</h3>
+      <ol style="margin:0">
+        <li><b>Draw a free-body diagram.</b> (Break angled forces into components, if necessary.)</li>
+        <li><b>Write two equations</b>, one for Newton's second law in each direction:
+          <div style="margin:6px 0 2px">(up forces) – (down forces) = ma</div>
+          <div>(left forces) – (right forces) = ma</div></li>
+      </ol>
+    </div>
+    <div class="tip">You should never get a "negative" net force, so <b>start each equation in the direction of acceleration</b>. For example, if acceleration is downward, write: (down forces) – (up forces) = ma.</div>
+    <div class="mistake">Setting a single force equal to ma. Only the <b>net force</b> equals mass times acceleration. Always subtract (or add) all the forces in that direction first.</div>
+  </div>
+  <div class="card">
+    <h2>Worked example (from class)</h2>
+    <div class="problem"><span class="label">QUESTION</span>A 10 kg cart experiences a 3 N force to the left and a 2 N force to the right. Calculate the amount of the cart's acceleration.</div>
+    <h3>Step 1: Free-body diagram</h3>
+    <div id="s4fbd"></div>
+    <h3>Step 2: Newton's second law</h3>
+    <div id="s4ex"></div>
+  </div>
+  <div class="card">
+    <h2>Practice: acceleration downward</h2>
+    <div class="problem"><span class="label">PROBLEM</span>A 4 kg block is attached to a rope. The rope pulls up on the block with a force of 30 N.</div>
+    <div id="s4p"></div>
+  </div>
+  <div class="finish" data-sec="4"></div>
+</section>
+
+<!-- ============ SECTION 5 ============ -->
+<section id="s5" class="page hidden">
+  <div class="sec-head"><div class="kicker">Section 5 of 6 · about 6 minutes</div><h1>Scales and Elevators</h1></div>
+  <div class="card">
+    <h2>What does a scale really read?</h2>
+    <div class="fact">A normal force is the force of a surface on an object in contact with that surface.</div>
+    <div class="fact">A normal force acts perpendicular to a surface.</div>
+    <div class="fact">A platform scale reads the normal force.</div>
+    <p>A scale does <b>not</b> read your weight. It reads how hard it pushes up on you (the normal force). The scale reading equals your weight only when the net force on you is zero.</p>
+  </div>
+  <div class="card">
+    <h2>Elevator simulator</h2>
+    <p>A student who weighs <b>600 N</b> (mass 60 kg) stands on a scale in an elevator. Choose each motion and watch the scale reading and the free-body diagram. Try <b>all 7</b> motions.</p>
+    <div id="esim"></div>
+    <div id="s5q"></div>
+  </div>
+  <div class="card">
+    <h2>Practice: solve it the class way</h2>
+    <div class="problem"><span class="label">PROBLEM</span>A 600 N student stands on a scale in an elevator. The scale reads 720 N. Determine each quantity.</div>
+    <div id="s5p"></div>
+  </div>
+  <div class="finish" data-sec="5"></div>
+</section>
+
+<!-- ============ SECTION 6 (CFU) ============ -->
+<section id="s6" class="page hidden">
+  <div class="sec-head"><div class="kicker">Section 6 of 6 · about 7 minutes</div><h1>Final Check for Understanding</h1></div>
+  <div class="card">
+    <p>This is the same check for understanding the class does, plus a few questions from this activity. There are <b>10 questions</b>. You need <b>8 correct (80%)</b> to pass.</p>
+    <ul>
+      <li>You can retake it. The numbers change each time.</li>
+      <li>After 3 attempts that don't pass, you'll do a short review before you can try again.</li>
+      <li>Keep your Fact Sheet open, and use scratch paper for free-body diagrams.</li>
+    </ul>
+    <div class="attempts" id="cfuInfo"></div>
+  </div>
+  <div id="cfuBox"></div>
+  <div id="cfuResult"></div>
+</section>
+
+<!-- ============ REMEDIATION ============ -->
+<section id="remed" class="page hidden">
+  <div class="sec-head"><div class="kicker">Quick review</div><h1>Let's Review Before You Try Again</h1></div>
+  <div class="card">
+    <p>The final check hasn't passed yet after 3 attempts. That's okay. Walk through this one problem step by step, then go back and try again.</p>
+    <div class="fact">On Earth's surface, the gravitational field g is 10 N/kg. This means that on Earth, 1 kg of mass weighs 10 N.</div>
+    <div class="fact">A platform scale reads the normal force.</div>
+    <div class="fact">Forces acting in opposite directions subtract to determine the net force. The larger force points in the direction of the net force.</div>
+    <div class="fact">The net force is in the direction of acceleration.</div>
+    <div class="keybox"><h3>Newton's second law</h3>Start in the direction of acceleration: (down forces) – (up forces) = ma, or (up forces) – (down forces) = ma.</div>
+  </div>
+  <div class="card">
+    <div class="problem"><span class="label">REVIEW PROBLEM</span>A 50 N box sits on a scale in an elevator. The scale reads 30 N.</div>
+    <div id="remQ"></div>
+    <div class="center" style="margin-top:14px"><button class="btn primary big" id="remDone" type="button" disabled>Back to the Final Check</button></div>
+  </div>
+</section>
+
+<!-- ============ CERTIFICATE ============ -->
+<section id="cert" class="page hidden">
+  <div class="certificate" id="certBox">
+    <div class="cert-kicker">AP Physics 1</div>
+    <div class="cert-title">Certificate of Completion</div>
+    <p>This certifies that</p>
+    <div class="cert-name" id="certName"></div>
+    <p>has completed the independent study activity</p>
+    <div class="cert-topic">Newton's Second Law</div>
+    <p id="certScore"></p>
+    <div class="cert-meta"><span id="certDate"></span><span>Verification code: <b id="certCode"></b></span></div>
+  </div>
+  <div class="card center">
+    <p>Show this certificate to your teacher or take a screenshot to turn in. Write down your verification code too.</p>
+    <div class="row" style="justify-content:center">
+      <button class="btn primary" type="button" onclick="window.print()">Print or save as PDF</button>
+      <button class="btn" type="button" id="certBack">Review the sections</button>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<!-- Fact sheet drawer -->
+<aside class="drawer" id="drawer" aria-label="Fact sheet">
+  <h2>Fact Sheet <button class="btn" type="button" id="factClose">Close</button></h2>
+  <p class="small muted">Use these almost word-for-word in the "Fact" part of a justification.</p>
+  <h3>Force and Net Force</h3>
+  <ul>
+    <li>A force is a push or a pull that acts on an object.</li>
+    <li>The units of force are newtons.</li>
+    <li>Forces acting in the same direction add together to determine the net force.</li>
+    <li>Forces acting in opposite directions subtract to determine the net force.</li>
+    <li>The larger force points in the direction of the net force.</li>
+    <li>The net force is in the direction in which forces are unbalanced.</li>
+    <li>The net force is in the direction of acceleration.</li>
+    <li>For all forces other than long-range forces (ex: force of the Earth), objects must be in contact in order to experience a force.</li>
+  </ul>
+  <h3>Acceleration</h3>
+  <ul>
+    <li>Acceleration tells how much an object's speed changes in one second.</li>
+    <li>When an object speeds up, its acceleration is in the direction of motion.</li>
+    <li>When an object slows down, its acceleration is opposite the direction of motion.</li>
+    <li>The units of acceleration are m/s per second.</li>
+  </ul>
+  <h3>Equilibrium</h3>
+  <ul>
+    <li>An object is in equilibrium if it is moving in a straight line at constant speed, or if it remains at rest.</li>
+    <li>The net force on an object in equilibrium is zero (the forces are balanced).</li>
+  </ul>
+  <h3>Mass and Weight</h3>
+  <ul>
+    <li>Mass tells how much material is contained in an object. The units of mass are kilograms.</li>
+    <li>Weight is the force of a planet acting on an object (in newtons).</li>
+    <li>On Earth's surface, the gravitational field g is 10 N/kg. This means that on Earth, 1 kg of mass weighs 10 N.</li>
+  </ul>
+  <h3>Normal Force</h3>
+  <ul>
+    <li>A normal force is the force of a surface on an object in contact with that surface.</li>
+    <li>A normal force acts perpendicular to a surface.</li>
+    <li>A platform scale reads the normal force.</li>
+  </ul>
+  <h3>Free-Body Diagrams</h3>
+  <ul>
+    <li>A labeled arrow representing each force. Each arrow begins on the object and points in the direction in which the force acts.</li>
+    <li>A list of the forces, indicating the object applying the force and the object experiencing the force.</li>
+  </ul>
+  <h3>Solving Problems With Unbalanced Forces</h3>
+  <ol>
+    <li>Draw a free-body diagram. Break angled forces into components, if necessary.</li>
+    <li>Write two equations, one for Newton's second law in each direction:<br>(up forces) – (down forces) = ma<br>(left forces) – (right forces) = ma</li>
+  </ol>
+  <p class="small">Never get a "negative" net force: start each equation in the direction of acceleration.</p>
+</aside>
+
+<div class="modal hidden" id="modal" role="dialog" aria-modal="true">
+  <div class="modal-card">
+    <h2 id="mTitle"></h2>
+    <div id="mBody"></div>
+    <div class="modal-actions" id="mActions"></div>
+  </div>
+</div>
+
+<script>
+"use strict";
+/* ====================== helpers ====================== */
+const $ = s => document.querySelector(s);
+const $$ = s => Array.from(document.querySelectorAll(s));
+function el(tag, cls, html){ const e=document.createElement(tag); if(cls) e.className=cls; if(html!=null) e.innerHTML=html; return e; }
+function shuffle(a){ for(let i=a.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [a[i],a[j]]=[a[j],a[i]]; } return a; }
+function pick(a){ return a[Math.floor(Math.random()*a.length)]; }
+function esc(s){ return String(s).replace(/[&<>"']/g, c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c])); }
+function parseNum(s){ s=String(s).trim().replace(/,/g,'').replace(/\s+/g,''); if(s==='') return NaN; if(!/^[-+]?(\d+\.?\d*|\.\d+)$/.test(s)) return NaN; return parseFloat(s); }
+function near(v, ans){ return Math.abs(v-ans) <= Math.max(0.011*Math.abs(ans), 1e-6); }
+function an(n){ const t=String(n); return (t[0]==='8'||t==='11'||t==='18'||/^8/.test(t))?'An':'A'; }
+function fmt(x){ return (Math.round(x*100)/100).toString(); }
+
+/* ====================== codes ====================== */
+function h32(s){ let h=0x811c9dc5; for(const c of s){ h^=c.charCodeAt(0); h=Math.imul(h,16777619)>>>0; } return h>>>0; }
+const ALPH='ABCDEFGHJKMNPQRSTUVWXYZ23456789';
+function normName(n){ return String(n).toLowerCase().replace(/[^a-z0-9]/g,''); }
+function normCode(c){ return String(c).toUpperCase().replace(/[^A-Z0-9]/g,''); }
+function makeCode(name, tag){
+  const n=normName(name); let a=h32('N2L|'+n+'|'+tag+'|v1'); let b=h32(tag+'#'+n+'#'+a); let s='';
+  for(let i=0;i<3;i++){ s+=ALPH[a%31]; a=Math.floor(a/31); }
+  s+='-';
+  for(let i=0;i<3;i++){ s+=ALPH[b%31]; b=Math.floor(b/31); }
+  return s;
+}
+const TEACHER_HASH=1293112622;
+function isTeacherCode(c){ return h32('T|'+normCode(c))===TEACHER_HASH; }
+
+/* ====================== state ====================== */
+const S={ name:'', teacher:false, unlocked:1, current:'start', done:new Set(), secDone:new Set(),
+  cfu:{attempts:0, fails:0, needRemed:false, passed:false, score:0, lastVariant:-1} };
+const REMED_AFTER=3;
+
+const SECTIONS=[
+  {id:'s1', short:'Net Force', tasks:[
+    {label:'Net Force Explorer: 3 challenges', gates:['s1-c1','s1-c2','s1-c3']},
+    {label:'Draw the free-body diagram', gates:['s1-fbd']},
+    {label:'Quick check (3 questions)', gates:['s1-q1','s1-q2','s1-q3']} ]},
+  {id:'s2', short:'Justify', tasks:[
+    {label:'Build a justification (3 steps)', gates:['s2-a','s2-b','s2-c']},
+    {label:'Match each question to its fact', gates:['s2-match']},
+    {label:'Complete the justification (fact + fill in the blanks)', gates:['s2-w']},
+    {label:'Spot the full-credit answer', gates:['s2-spot']} ]},
+  {id:'s3', short:'Direction of Motion', tasks:[
+    {label:'Make a prediction', gates:['s3-poll']},
+    {label:'Run both trials and record what you saw', gates:['s3-obs']},
+    {label:'Practice: direction of motion', gates:['s3-grid']},
+    {label:'Could it be moving left at 1 m/s?', gates:['s3-l1','s3-l2','s3-lw']},
+    {label:'Could it move at a constant speed?', gates:['s3-c1','s3-c2','s3-c3']} ]},
+  {id:'s4', short:'Calculating a', tasks:[
+    {label:'Mass and weight (2 questions)', gates:['s4-w1','s4-w2']},
+    {label:'Worked example: 10 kg cart', gates:['s4-e1','s4-e2','s4-e3','s4-e4']},
+    {label:'Practice: acceleration downward', gates:['s4-p1','s4-p2','s4-p3','s4-p4']} ]},
+  {id:'s5', short:'Elevators', tasks:[
+    {label:'Elevator simulator: try all 7 motions', gates:['s5-sim']},
+    {label:'Elevator questions (2)', gates:['s5-q1','s5-q2']},
+    {label:'Practice: 600 N student (6 parts)', gates:['s5-p1','s5-p2','s5-p3','s5-p4','s5-p5','s5-p6']} ]},
+  {id:'s6', short:'Final Check', tasks:[]}
+];
+const REMED_GATES=['r1','r2','r3','r4','r5','r6','r7'];
+
+function secGates(i){ return SECTIONS[i-1].tasks.flatMap(t=>t.gates); }
+function secComplete(i){ return secGates(i).every(g=>S.done.has(g)); }
+
+function gate(id){
+  if(!id || S.done.has(id)) return;
+  S.done.add(id);
+  refreshFinish(); revealAfter();
+  if(REMED_GATES.includes(id)) $('#remDone').disabled = !REMED_GATES.every(g=>S.done.has(g));
+}
+
+function revealAfter(){
+  const all=g=>g.split(',').every(x=>S.done.has(x));
+  $$('[data-after],[data-until]').forEach(e=>{
+    const afterOk = !e.dataset.after || S.teacher || all(e.dataset.after);
+    const untilDone = e.dataset.until ? (S.teacher || all(e.dataset.until)) : false;
+    const show = afterOk && !untilDone;
+    const was = e.classList.contains('hidden');
+    e.classList.toggle('hidden', !show);
+    if(show && was && e.dataset.resize) setTimeout(()=>({msim,esim})[e.dataset.resize].resize(),20);
+  });
+}
+/* ====================== navigation ====================== */
+function renderNav(){
+  const nav=$('#nav'); nav.innerHTML='';
+  SECTIONS.forEach((s,idx)=>{
+    const i=idx+1; const open = S.teacher || i<=S.unlocked;
+    const p=el('button','pill'); p.type='button';
+    if(!open) p.classList.add('locked');
+    if(S.secDone.has(i) || (i===6 && S.cfu.passed)) p.classList.add('done');
+    if(S.current===s.id) p.classList.add('current');
+    const mark = (S.secDone.has(i) || (i===6 && S.cfu.passed)) ? '✓' : i;
+    p.innerHTML=`<span class="n">${open||S.secDone.has(i)? mark : '<svg width="10" height="12" viewBox="0 0 10 12"><rect x="1" y="5" width="8" height="7" rx="1.5" fill="#586377"/><path d="M3 5V3.5a2 2 0 0 1 4 0V5" stroke="#586377" stroke-width="1.6" fill="none"/></svg>'}</span>${s.short}`;
+    p.title = open? '' : 'Finish the section before this one to unlock it';
+    p.onclick=()=>{ if(open) go(s.id); };
+    nav.appendChild(p);
+  });
+  if(S.cfu.passed){
+    const c=el('button','pill done'); c.type='button'; c.innerHTML='<span class="n">★</span>Certificate'; c.onclick=()=>go('cert'); nav.appendChild(c);
+  }
+}
+function go(id){
+  $$('.page').forEach(p=>p.classList.add('hidden'));
+  $('#'+id).classList.remove('hidden');
+  S.current=id;
+  $('#nav').classList.toggle('hidden', id==='start');
+  renderNav();
+  window.scrollTo({top:0,left:0,behavior:'instant'});
+  if(id==='s3') setTimeout(()=>msim.resize(),30);
+  if(id==='s5') setTimeout(()=>esim.resize(),30);
+  if(id==='s6') renderCFUPage();
+}
+function setWho(){
+  $('#who').innerHTML = (S.teacher? '<span class="badge">TEACHER MODE</span> ' : '') + (S.name? 'Student: <b>'+esc(S.name)+'</b>' : '');
+  $('#teachBtn').classList.toggle('hidden', !S.teacher);
+}
+
+/* ====================== finish panels ====================== */
+function refreshFinish(){
+  $$('.finish').forEach(f=>{
+    const i=+f.dataset.sec; const sec=SECTIONS[i-1];
+    const next = i<6 ? SECTIONS[i].short : '';
+    const complete = secComplete(i);
+    const already = S.secDone.has(i);
+    f.innerHTML = `<h3>To finish Section ${i}:</h3><ul class="checklist">${sec.tasks.map(t=>{
+        const ok=t.gates.every(g=>S.done.has(g)); return `<li class="${ok?'ok':''}"><span class="box">${ok?'✓':''}</span>${t.label}</li>`;}).join('')}</ul>`;
+    const b=el('button','btn primary big', already? `Show my Section ${i} code again` : `Finish Section ${i} and get my checkpoint code`);
+    b.type='button';
+    b.disabled = !(complete || already || S.teacher);
+    b.onclick=()=>finishSection(i);
+    f.appendChild(b);
+    if(!complete && !already && !S.teacher){ f.appendChild(el('p','small muted','Complete every item above to unlock the button.')); }
+  });
+}
+function finishSection(i){
+  S.secDone.add(i);
+  S.unlocked=Math.max(S.unlocked, i+1);
+  renderNav();
+  const code=makeCode(S.name||'Teacher','S'+i);
+  const nextId=SECTIONS[i].id;
+  showModal(`Section ${i} complete!`,
+    `<p>Your checkpoint code is:</p><div class="code">${code}</div>
+     <p><b>Write this code down</b> next to your name (<b>${esc(S.name||'Teacher')}</b>). If the page reloads, go to "Coming back?" on the start page and enter your name and this code to jump to Section ${i+1}.</p>`,
+    [{t:`Continue to Section ${i+1}`, primary:true, fn:()=>{ hideModal(); go(nextId); }}]);
+}
+
+/* ====================== modal / drawer ====================== */
+function showModal(title, body, actions){
+  $('#mTitle').textContent=title; $('#mBody').innerHTML=body;
+  const a=$('#mActions'); a.innerHTML='';
+  actions.forEach(x=>{ const b=el('button','btn'+(x.primary?' primary':''),x.t); b.type='button'; b.onclick=x.fn; a.appendChild(b); });
+  $('#modal').classList.remove('hidden');
+}
+function hideModal(){ $('#modal').classList.add('hidden'); }
+$('#factBtn').onclick=()=>$('#drawer').classList.toggle('open');
+$('#factClose').onclick=()=>$('#drawer').classList.remove('open');
+
+/* ====================== question components ====================== */
+function mcq(host, cfg){
+  const box=el('div','q');
+  box.appendChild(el('div','qtext',cfg.q));
+  const list=el('div','opts'); const fb=el('div','fb');
+  const opts = cfg.noShuffle ? cfg.opts.slice() : shuffle(cfg.opts.slice());
+  opts.forEach(o=>{
+    const b=el('button','opt',o.t); b.type='button';
+    b.onclick=()=>{
+      if(box.classList.contains('done')) return;
+      if(cfg.poll){
+        b.classList.add('right'); box.classList.add('done');
+        list.querySelectorAll('.opt').forEach(x=>x.disabled=true);
+        fb.className='fb'; fb.innerHTML=o.fb||''; gate(cfg.gate); return;
+      }
+      if(o.ok){
+        b.classList.add('right'); box.classList.add('done');
+        list.querySelectorAll('.opt').forEach(x=>{ x.disabled=true; });
+        fb.className='fb good'; fb.innerHTML='✓ '+(o.fb||'Correct!');
+        gate(cfg.gate); if(cfg.onCorrect) cfg.onCorrect();
+      } else {
+        b.classList.add('wrong'); fb.className='fb bad'; fb.innerHTML=o.fb||'Not quite. Try again.';
+      }
+    };
+    list.appendChild(b);
+  });
+  box.append(list, fb); host.appendChild(box); return box;
+}
+
+const DIRS={L:'left',R:'right',U:'up',D:'down',Z:'no direction (the net force is zero)'};
+function numq(host, cfg){
+  // cfg: q, ans, unit, gate, hint, dirs:[keys], dirAns
+  const box=el('div','q');
+  box.appendChild(el('div','qtext',cfg.q));
+  const row=el('div','row');
+  const inp=el('input','num'); inp.type='text'; inp.inputMode='decimal'; inp.setAttribute('aria-label','answer');
+  row.appendChild(inp);
+  if(cfg.unit) row.appendChild(el('span','',cfg.unit));
+  let sel=null;
+  if(cfg.dirs){ sel=el('select'); sel.innerHTML='<option value="">direction…</option>'+cfg.dirs.map(k=>`<option value="${k}">${DIRS[k]}</option>`).join(''); row.appendChild(sel); }
+  const btn=el('button','btn','Check'); btn.type='button'; row.appendChild(btn);
+  const fb=el('div','fb');
+  box.append(row, fb);
+  const check=()=>{
+    if(box.classList.contains('done')) return;
+    const v=parseNum(inp.value);
+    if(isNaN(v)){ fb.className='fb bad'; fb.textContent='Type a number (digits only; the unit is already there).'; return; }
+    const nOk=near(v,cfg.ans); let dOk=true;
+    if(sel){ dOk = (sel.value===cfg.dirAns); }
+    inp.classList.toggle('ok',nOk); inp.classList.toggle('no',!nOk);
+    if(sel){ sel.classList.toggle('ok',dOk); sel.classList.toggle('no',!dOk); }
+    if(nOk && dOk){
+      box.classList.add('done'); inp.disabled=true; if(sel) sel.disabled=true; btn.disabled=true;
+      fb.className='fb good'; fb.innerHTML='✓ '+(cfg.good||'Correct!'); gate(cfg.gate);
+    } else {
+      fb.className='fb bad';
+      let msg = !nOk && !dOk ? 'Check both the amount and the direction.' : (!nOk ? 'The amount isn’t right yet.' : 'The amount is right, but check the direction.');
+      if(sel && !sel.value) msg='Choose a direction too.' + (!nOk? ' Also check the amount.':'');
+      fb.innerHTML = msg + (cfg.hint? ' <br><i>Hint: '+cfg.hint+'</i>':'');
+    }
+  };
+  btn.onclick=check; inp.addEventListener('keydown',e=>{ if(e.key==='Enter') check(); });
+  host.appendChild(box); return box;
+}
+
+function selGroup(host, cfg){
+  // cfg: title, items:[{html (use {S} for select), opts:[..], ans, hint}], gate, requires(), requiresMsg, good
+  const box=el('div','q');
+  if(cfg.title) box.appendChild(el('div','qtext',cfg.title));
+  const sels=[];
+  cfg.items.forEach(it=>{
+    const d=el('div','gi');
+    const opts = '<option value="">choose…</option>'+it.opts.map(o=>`<option>${o}</option>`).join('');
+    d.innerHTML=it.html.replace('{S}',`<select class="inline-sel">${opts}</select>`);
+    const h=el('div','fb bad small hidden'); d.appendChild(h);
+    sels.push({sel:d.querySelector('select'), it, h});
+    box.appendChild(d);
+  });
+  const row=el('div','row'); const btn=el('button','btn','Check my answers'); btn.type='button'; row.appendChild(btn);
+  const fb=el('div','fb'); box.append(row, fb);
+  btn.onclick=()=>{
+    if(box.classList.contains('done')) return;
+    if(cfg.requires && !cfg.requires()){ fb.className='fb bad'; fb.innerHTML=cfg.requiresMsg; return; }
+    let all=true;
+    sels.forEach(({sel,it,h})=>{
+      const ok = sel.value===it.ans;
+      sel.classList.toggle('ok',ok); sel.classList.toggle('no',!ok);
+      if(!ok){ all=false; if(it.hint){ h.innerHTML=it.hint; h.classList.remove('hidden'); } }
+      else h.classList.add('hidden');
+    });
+    if(all){ box.classList.add('done'); sels.forEach(s=>s.sel.disabled=true); btn.disabled=true; fb.className='fb good'; fb.innerHTML='✓ '+(cfg.good||'All correct!'); gate(cfg.gate); }
+    else { fb.className='fb bad'; fb.innerHTML='Some answers (in red) need another look.'; }
+  };
+  host.appendChild(box); return box;
+}
+
+let fjCount=0;
+function fillJust(host, cfg){
+  // cfg: q, lead, facts:[{t, ok, fb}], reason: 'text with {0} {1}…', blanks:[{opts:[…], ans} | {num:true, ans, unit}], gate, good
+  const box=el('div','q'); const name='fj'+(++fjCount);
+  if(cfg.q) box.appendChild(el('div','problem','<span class="label">QUESTION</span>'+cfg.q));
+  if(cfg.lead) box.appendChild(el('p','',cfg.lead));
+  box.appendChild(el('div','qtext','<span class="step-lab f">Fact:</span> Choose the fact that starts this justification.'));
+  const fl=el('div','fact-pick');
+  shuffle(cfg.facts.map((f,j)=>({...f,j}))).forEach(f=>{
+    const L=el('label','o'); L.innerHTML=`<input type="radio" name="${name}" value="${f.j}"><span>${f.t}</span>`; fl.appendChild(L); });
+  box.appendChild(fl);
+  box.appendChild(el('div','qtext','<span class="step-lab r">Reasoning:</span> Fill in the blanks to apply the fact to this problem.'));
+  let html=cfg.reason;
+  cfg.blanks.forEach((bl,i)=>{
+    const ctl = bl.num ? `<input type="text" class="num blank" inputmode="decimal" data-i="${i}" style="width:70px" aria-label="blank ${i+1}">`
+      : `<select class="blank" data-i="${i}" aria-label="blank ${i+1}"><option value="">choose…</option>${bl.opts.map(o=>`<option>${o}</option>`).join('')}</select>`;
+    html=html.replace('{'+i+'}',ctl); });
+  box.appendChild(el('div','reason-fill',html));
+  const row=el('div','row'); row.style.marginTop='8px';
+  const btn=el('button','btn','Check my justification'); btn.type='button'; row.appendChild(btn);
+  const fb=el('div','fb'); box.append(row,fb);
+  btn.onclick=()=>{
+    if(box.classList.contains('done')) return;
+    fl.querySelectorAll('label.o').forEach(l=>l.classList.remove('right','wrong'));
+    const pickEl=fl.querySelector('input:checked');
+    const f = pickEl ? cfg.facts[+pickEl.value] : null;
+    if(pickEl) pickEl.closest('label').classList.add(f.ok?'right':'wrong');
+    let blanksOk=true, anyEmpty=false;
+    box.querySelectorAll('.blank').forEach(c=>{
+      const bl=cfg.blanks[+c.dataset.i]; let ok;
+      if(bl.num){ const v=parseNum(c.value); ok=!isNaN(v)&&near(v,bl.ans); if(c.value.trim()==='') anyEmpty=true; }
+      else { ok=c.value===bl.ans; if(!c.value) anyEmpty=true; }
+      c.classList.toggle('ok',ok); c.classList.toggle('no',!ok); if(!ok) blanksOk=false; });
+    const msgs=[];
+    if(!f) msgs.push('Choose a fact.');
+    else if(!f.ok) msgs.push('<b>Fact:</b> '+(f.fb||'That fact doesn’t justify this answer. Try another one.'));
+    if(!blanksOk) msgs.push('<b>Reasoning:</b> '+(anyEmpty?'Fill in every blank. ':'')+'Check the blanks in red.'+(cfg.hint?' <i>Hint: '+cfg.hint+'</i>':''));
+    if(f && f.ok && blanksOk){
+      box.classList.add('done'); btn.disabled=true;
+      fl.querySelectorAll('input').forEach(x=>x.disabled=true); box.querySelectorAll('.blank').forEach(x=>x.disabled=true);
+      let full=cfg.reason; cfg.blanks.forEach((bl,i)=>{ full=full.replace('{'+i+'}','<b>'+(bl.num?fmt(bl.ans):bl.ans)+'</b>'); });
+      fb.className='fb good';
+      fb.innerHTML='✓ '+(cfg.good||'That’s a complete justification:')+`<div class="model" style="margin-top:6px"><p><span class="f">Fact:</span> ${f.t}</p><p><span class="r">Reasoning:</span> ${full}</p></div>`;
+      gate(cfg.gate);
+    } else { fb.className='fb bad'; fb.innerHTML=msgs.join('<br>'); }
+  };
+  host.appendChild(box); return box;
+}
+
+/* ====================== SVG helpers ====================== */
+function svgArrow(x1,y1,x2,y2,color,w){
+  w=w||5; const dx=x2-x1, dy=y2-y1, len=Math.hypot(dx,dy); if(len<2) return '';
+  const ux=dx/len, uy=dy/len, hl=Math.min(16,len*0.55), hw=9;
+  const bx=x2-ux*hl, by=y2-uy*hl, px=-uy, py=ux;
+  return `<line x1="${x1}" y1="${y1}" x2="${bx}" y2="${by}" stroke="${color}" stroke-width="${w}" stroke-linecap="round"/>`+
+    `<polygon points="${x2},${y2} ${bx+px*hw},${by+py*hw} ${bx-px*hw},${by-py*hw}" fill="${color}"/>`;
+}
+function svgText(x,y,t,color,anchor,size,weight){ return `<text x="${x}" y="${y}" fill="${color||'#1b2233'}" font-size="${size||15}" font-weight="${weight||700}" text-anchor="${anchor||'middle'}" font-family="system-ui,Segoe UI,Arial,sans-serif">${t}</text>`; }
+const C={force:'#e06a12', net:'#7a3cc2', vel:'#17804a', weight:'#44506a', normal:'#1878b0', ink:'#1b2233', muted:'#586377'};
+
+/* ====================== SECTION 1 ====================== */
+function buildNFX(){
+  const host=$('#nfx');
+  const st={A:{m:3,d:'L'}, B:{m:2,d:'R'}};
+  host.innerHTML=`<div class="sim">
+    <svg id="nfxSvg" viewBox="0 0 640 215" role="img" aria-label="A box with two forces and the net force"></svg>
+    <div class="ctl-grid">
+      ${['A','B'].map(k=>`<div class="fctl"><div class="fctl-title">Force ${k}: <span id="nfx${k}v"></span></div>
+        <div class="row"><div class="seg" data-k="${k}"><button type="button" data-d="L">&larr; Left</button><button type="button" data-d="R">Right &rarr;</button></div></div>
+        <input type="range" min="0" max="10" step="1" id="nfx${k}" aria-label="Size of force ${k}"></div>`).join('')}
+    </div>
+    <div class="readout" id="nfxOut"></div></div>
+    <h3>Challenges</h3><p class="small muted">Set up the forces to match each challenge, then press Check.</p><div id="nfxCh"></div>`;
+  const svg=$('#nfxSvg');
+  function netInfo(){
+    const L=(st.A.d==='L'?st.A.m:0)+(st.B.d==='L'?st.B.m:0);
+    const R=(st.A.d==='R'?st.A.m:0)+(st.B.d==='R'?st.B.m:0);
+    return {L,R,net:R-L};
+  }
+  function draw(){
+    const k=13, cx=320, bx1=270, bx2=370, gy=150;
+    let s=`<line x1="20" y1="${gy}" x2="620" y2="${gy}" stroke="#b6bfd1" stroke-width="3"/>`;
+    s+=`<rect x="${bx1}" y="90" width="100" height="60" rx="6" fill="#dfe6f5" stroke="#6a7a9c" stroke-width="2"/>`+svgText(cx,126,'box',C.muted,'middle',14,600);
+    [['A',107],['B',133]].forEach(([key,y])=>{
+      const f=st[key]; if(f.m===0) return;
+      const x1 = f.d==='L'? bx1 : bx2, x2 = f.d==='L'? bx1-f.m*k : bx2+f.m*k;
+      s+=svgArrow(x1,y,x2,y,C.force,5);
+      s+=svgText(f.d==='L'? x2-6 : x2+6, y+5, `${key}: ${f.m} N`, C.force, f.d==='L'?'end':'start',14);
+    });
+    const n=netInfo();
+    if(n.net!==0){
+      const x2=cx+n.net*k; s+=svgArrow(cx,180,x2,180,C.net,6);
+      s+=svgText(cx, 207, `Net force: ${Math.abs(n.net)} N ${n.net<0?'left':'right'}`, C.net, 'middle',15);
+    } else {
+      s+=svgText(cx,200,'Net force: 0 N (balanced)',C.net,'middle',15);
+    }
+    svg.innerHTML=s;
+    ['A','B'].forEach(key=>{
+      $('#nfx'+key+'v').textContent=`${st[key].m} N ${st[key].d==='L'?'left':'right'}`;
+      $('#nfx'+key).value=st[key].m;
+      host.querySelectorAll(`.seg[data-k="${key}"] button`).forEach(b=>b.classList.toggle('on', b.dataset.d===st[key].d));
+    });
+    let t;
+    const A=st.A, B=st.B;
+    if(A.m===0 || B.m===0){ const f=A.m===0?B:A; t = f.m===0? 'No forces act on the box, so the net force is <b>0 N</b>.' : `Only one force acts, so the net force is just that force: <b>${f.m} N ${f.d==='L'?'left':'right'}</b>.`; }
+    else if(A.d===B.d){ t=`Same direction &rarr; <b>add</b>: ${A.m} + ${B.m} = ${A.m+B.m} N. Net force: <b>${A.m+B.m} N ${A.d==='L'?'left':'right'}</b>.`; }
+    else { const big=Math.max(A.m,B.m), sm=Math.min(A.m,B.m);
+      if(big===sm) t=`Opposite directions &rarr; <b>subtract</b>: ${big} − ${sm} = 0 N. The forces are balanced, so the net force is <b>zero</b>.`;
+      else { const bigDir = (A.m>B.m? A.d : B.d)==='L'?'left':'right'; t=`Opposite directions &rarr; <b>subtract</b>: ${big} − ${sm} = ${big-sm} N. The larger force points ${bigDir}, so the net force is <b>${big-sm} N ${bigDir}</b>.`; } }
+    $('#nfxOut').innerHTML=t;
+  }
+  ['A','B'].forEach(key=>{
+    $('#nfx'+key).oninput=e=>{ st[key].m=+e.target.value; draw(); };
+    host.querySelectorAll(`.seg[data-k="${key}"] button`).forEach(b=>b.onclick=()=>{ st[key].d=b.dataset.d; draw(); });
+  });
+  draw();
+  const chs=[
+    {g:'s1-c1', t:'Make the net force <b>7 N to the right</b> using two forces that point in the <b>same direction</b>. (Neither force can be 0.)',
+     test:()=>st.A.d==='R'&&st.B.d==='R'&&st.A.m>0&&st.B.m>0&&st.A.m+st.B.m===7,
+     ok:'Same direction, so the forces add to 7 N right.', hint:'Point both forces to the right. Their sizes should add to 7.'},
+    {g:'s1-c2', t:'Make the net force <b>2 N to the left</b> using two forces that point in <b>opposite directions</b>. (Neither force can be 0.)',
+     test:()=>{ const n=netInfo(); return st.A.d!==st.B.d&&st.A.m>0&&st.B.m>0&&n.net===-2; },
+     ok:'Opposite directions subtract, and the larger force points left.', hint:'Point one force left and one right. The left force must be 2 N bigger.'},
+    {g:'s1-c3', t:'Make the net force <b>zero</b>, but neither force can be 0.',
+     test:()=>st.A.d!==st.B.d&&st.A.m>0&&st.A.m===st.B.m,
+     ok:'Equal forces in opposite directions subtract to zero. The forces are balanced.', hint:'Use opposite directions and make the two forces the same size.'}
+  ];
+  const ch=$('#nfxCh');
+  chs.forEach((c,i)=>{
+    const b=el('div','q'); b.innerHTML=`<div class="qtext">Challenge ${i+1}: ${c.t}</div>`;
+    const row=el('div','row'); const btn=el('button','btn','Check'); btn.type='button'; row.appendChild(btn);
+    const fb=el('div','fb'); b.append(row,fb);
+    btn.onclick=()=>{
+      if(c.test()){ b.classList.add('done'); btn.disabled=true; fb.className='fb good'; fb.innerHTML='✓ '+c.ok; gate(c.g); }
+      else { const n=netInfo(); fb.className='fb bad'; fb.innerHTML=`Right now the net force is ${n.net===0?'0 N':Math.abs(n.net)+' N '+(n.net<0?'left':'right')}. ${c.hint}`; }
+    };
+    ch.appendChild(b);
+  });
+}
+
+function buildFBD(){
+  const host=$('#fbd');
+  const OPTS=['none','3 N force','2 N force','Weight','Normal force'];
+  host.innerHTML=`<div class="sim">
+    <svg id="fbdSvg" class="fbd-svg" viewBox="0 0 460 300" role="img" aria-label="Free-body diagram builder"></svg>
+    <p class="small muted" style="margin:8px 0 0">Choose which force (if any) points in each direction. Arrows start on the cart.</p>
+    <div class="fbd-grid">
+      ${['up','down','left','right'].map(d=>`<label>Arrow pointing ${d.toUpperCase()}<select data-d="${d}">${OPTS.map(o=>`<option>${o}</option>`).join('')}</select></label>`).join('')}
+    </div>
+    <div class="row" style="margin-top:10px"><button class="btn" type="button" id="fbdCheck">Check my free-body diagram</button></div>
+    <div class="fb" id="fbdFb"></div>
+    <div id="fbdList" class="hidden model"></div></div>`;
+  const svg=$('#fbdSvg'); const sels={}; host.querySelectorAll('select').forEach(s=>sels[s.dataset.d]=s);
+  const len=o=>o==='3 N force'?105:o==='2 N force'?70:75;
+  const col=o=>o==='Weight'?C.weight:o==='Normal force'?C.normal:C.force;
+  function draw(){
+    const cx=230, cy=150; let s='';
+    s+=`<rect x="${cx-40}" y="${cy-25}" width="80" height="50" rx="8" fill="#dfe6f5" stroke="#6a7a9c" stroke-width="2"/>`+svgText(cx,cy+5,'cart',C.muted,'middle',14,600);
+    const v={up:sels.up.value,down:sels.down.value,left:sels.left.value,right:sels.right.value};
+    if(v.left!=='none'){ const L=len(v.left); s+=svgArrow(cx-40,cy,cx-40-L,cy,col(v.left)); s+=svgText(cx-46,cy-14,v.left,col(v.left),'end',14); }
+    if(v.right!=='none'){ const L=len(v.right); s+=svgArrow(cx+40,cy,cx+40+L,cy,col(v.right)); s+=svgText(cx+46,cy-14,v.right,col(v.right),'start',14); }
+    if(v.up!=='none'){ const L=Math.min(len(v.up),100); s+=svgArrow(cx,cy-25,cx,cy-25-L,col(v.up)); s+=svgText(cx+12,cy-25-L+14,v.up,col(v.up),'start',14); }
+    if(v.down!=='none'){ const L=Math.min(len(v.down),100); s+=svgArrow(cx,cy+25,cx,cy+25+L,col(v.down)); s+=svgText(cx+12,cy+25+L-4,v.down,col(v.down),'start',14); }
+    svg.innerHTML=s;
+  }
+  Object.values(sels).forEach(s=>s.onchange=()=>{ draw(); $('#fbdFb').textContent=''; });
+  draw();
+  $('#fbdCheck').onclick=()=>{
+    const v={up:sels.up.value,down:sels.down.value,left:sels.left.value,right:sels.right.value};
+    const fb=$('#fbdFb'); fb.className='fb bad'; let msg='';
+    const horiz=['3 N force','2 N force'];
+    if(v.left==='none'&&v.right==='none') msg='Start with the two forces described in the problem: one points left, one points right.';
+    else if(v.left==='2 N force'&&v.right==='3 N force') msg='Close! Re-read the problem: the <b>3 N</b> force points <b>left</b> and the <b>2 N</b> force points <b>right</b>.';
+    else if(['Weight','Normal force'].includes(v.left)||['Weight','Normal force'].includes(v.right)) msg='Weight is the force of the Earth, so it points <b>down</b>. The normal force from the track acts perpendicular to the surface, so it points <b>up</b>. Neither one points sideways.';
+    else if(v.left!=='3 N force'||v.right!=='2 N force') msg='Re-read the problem: a 3 N force to the left and a 2 N force to the right.';
+    else if(horiz.includes(v.up)||horiz.includes(v.down)) msg='The 3 N and 2 N forces are horizontal (left and right). Nothing in the problem pushes up or down with those forces.';
+    else if(v.up==='Weight'||v.down==='Normal force') msg='Flip those: weight (force of Earth on the cart) points <b>down</b>, and the normal force (force of the track on the cart) points <b>up</b>.';
+    else if((v.up==='Normal force')!==(v.down==='Weight')) msg='If you draw one vertical force, draw the other too: the normal force (up) and the weight (down). The cart isn’t speeding up or slowing down vertically, so they balance.';
+    if(msg){ fb.innerHTML=msg; return; }
+    fb.className='fb good';
+    fb.innerHTML='✓ Correct! The 3 N arrow points left and is longer than the 2 N arrow pointing right.'+(v.up==='none'?' (Real carts also have a weight down and a normal force up that cancel. Since the problem only described horizontal forces, leaving them off is fine here.)':' Nice job including the weight and normal force.');
+    host.querySelectorAll('select').forEach(s=>s.disabled=true); $('#fbdCheck').disabled=true;
+    const L=$('#fbdList'); L.classList.remove('hidden');
+    L.innerHTML='<b>List of forces</b> (part 2 of every free-body diagram):<ul style="margin:6px 0 0"><li>3 N force (left): the problem doesn’t say what applies it, so we call it the 3 N force on the cart.</li><li>2 N force (right): same idea, the 2 N force on the cart.</li><li>Weight: force of the Earth on the cart.</li><li>Normal force: force of the track on the cart.</li></ul>';
+    gate('s1-fbd');
+  };
+}
+
+function buildS1Q(){
+  const h=$('#s1q');
+  numq(h,{q:'1. A box experiences a 5 N force to the right and a 3 N force to the right. What is the net force on the box?', ans:8, unit:'N', dirs:['L','R','Z'], dirAns:'R', gate:'s1-q1', hint:'Forces acting in the same direction add together.'});
+  numq(h,{q:'2. A cart experiences a 6 N force to the left and a 4 N force to the right. What is the net force on the cart?', ans:2, unit:'N', dirs:['L','R','Z'], dirAns:'L', gate:'s1-q2', hint:'Opposite directions subtract. The larger force points in the direction of the net force.'});
+  numq(h,{q:'3. A book experiences a 4 N force up and a 4 N force down. What is the net force on the book?', ans:0, unit:'N', dirs:['U','D','Z'], dirAns:'Z', gate:'s1-q3', hint:'Equal forces in opposite directions subtract to zero. A zero net force has no direction.'});
+}
+
+/* ====================== SECTION 2 ====================== */
+function buildS2(){
+  const b=$('#s2build');
+  mcq(b,{q:'Step 1. Which way is the cart’s acceleration?', gate:'s2-a', opts:[
+    {t:'To the left', ok:true, fb:'The net force is 1 N left, and acceleration points the same way as the net force.'},
+    {t:'To the right', fb:'The net force is to the left (the larger force is 3 N left). Acceleration is in the same direction as the net force.'},
+    {t:'There is no acceleration', fb:'The forces are unbalanced (3 N ≠ 2 N), so there is a net force, and so there is an acceleration.'} ]});
+  mcq(b,{q:'Step 2. Choose the best <b>Fact</b> to start your justification.', gate:'s2-b', opts:[
+    {t:'The net force is in the direction of acceleration.', ok:true, fb:'This fact connects the net force (which you know) to the acceleration (which you want).'},
+    {t:'An object always moves in the direction of the net force.', fb:'That’s not on the fact sheet, and it isn’t true! You’ll see why in Section 3.'},
+    {t:'Acceleration tells how much an object’s speed changes in one second.', fb:'That’s a real fact, but it doesn’t tell you which <i>direction</i> the acceleration points.'},
+    {t:'Forces acting in the same direction add together to determine the net force.', fb:'The forces on this cart point in opposite directions, and this fact doesn’t say anything about acceleration.'} ]});
+  mcq(b,{q:'Step 3. Choose the best <b>Reasoning</b>.', gate:'s2-c', opts:[
+    {t:'The net force on the cart is 1 N to the left, so the cart’s acceleration is also to the left.', ok:true, fb:'Your full justification: <div class="model" style="margin-top:6px"><span class="f">Fact:</span> The net force is in the direction of acceleration. <span class="r">Reasoning:</span> The net force on the cart is 1 N to the left, so the cart’s acceleration is also to the left.</div>'},
+    {t:'The cart is moving to the left, so its acceleration is to the left.', fb:'The problem never says which way the cart is moving! Reason from the net force instead.'},
+    {t:'The 2 N force points right, so the acceleration is to the right.', fb:'The acceleration follows the <i>net</i> force, and the net force points toward the larger force (3 N left).'} ]});
+
+  const MF=['Forces acting in the same direction add together to determine the net force.',
+    'Forces acting in opposite directions subtract to determine the net force. The larger force points in the direction of the net force.',
+    'The net force is in the direction of acceleration.',
+    'Acceleration tells how much an object\u2019s speed changes in one second.'];
+  let mOrder; do { mOrder=shuffle([0,1,2,3]); } while(mOrder.some((v,i)=>v===i));
+  const LET='ABCD', letterOf=i=>LET[mOrder.indexOf(i)];
+  selGroup($('#s2match'),{
+    title:'<div class="bank"><b>Fact bank</b>'+mOrder.map((fi,k)=>`<div><b>${LET[k]}.</b> ${MF[fi]}</div>`).join('')+'</div>',
+    items:[
+      {html:'1. Two students push a box to the right, one with 20 N and one with 30 N. What is the net force on the box? Fact: {S}', opts:['A','B','C','D'], ans:letterOf(0), hint:'Both pushes point the same way.'},
+      {html:'2. A wagon is pulled forward with 15 N while friction pushes backward with 4 N. Which way is the net force? Fact: {S}', opts:['A','B','C','D'], ans:letterOf(1), hint:'The forces point in opposite directions.'},
+      {html:'3. The net force on a sled is 6 N to the east. Which way is the sled\u2019s acceleration? Fact: {S}', opts:['A','B','C','D'], ans:letterOf(2), hint:'Which fact connects net force to acceleration?'},
+      {html:'4. A cart has an acceleration of 3 m/s per second. How much does its speed change each second? Fact: {S}', opts:['A','B','C','D'], ans:letterOf(3), hint:'Which fact says what acceleration tells you about speed?'} ],
+    good:'All matched! Picking the right fact is the first step of every justification.', gate:'s2-match'});
+
+  fillJust($('#s2write'),{
+    q:'A box experiences a 10 N force to the left and a 6 N force to the right. Which way is the net force on the box? Justify your answer with a fact.',
+    facts:[
+      {t:'Forces acting in opposite directions subtract to determine the net force. The larger force points in the direction of the net force.', ok:true},
+      {t:'Forces acting in the same direction add together to determine the net force.', fb:'The 10 N and 6 N forces point in opposite directions, so this fact doesn’t apply.'},
+      {t:'The net force is in the direction of acceleration.', fb:'True, but the problem doesn’t tell you the acceleration. Start from the forces you know.'},
+      {t:'An object moves in the direction of the net force.', fb:'That isn’t on the fact sheet, and it isn’t true (you’ll see why in Section 3).'} ],
+    reason:'The larger force points to the {0}, so the net force is to the {1}. Forces acting in opposite directions {2}, so the net force is 10 − 6, which is {3} N {4}.',
+    blanks:[{opts:['left','right'],ans:'left'},{opts:['left','right'],ans:'left'},{opts:['add','subtract'],ans:'subtract'},{num:true,ans:4},{opts:['left','right'],ans:'left'}],
+    hint:'The larger force is the 10 N force.', gate:'s2-w'});
+
+  mcq($('#s2spot'),{q:'A sled experiences a 12 N force to the right and a 5 N force to the left. Which way is the sled’s acceleration? <br>Which answer would earn <b>full credit</b>?', gate:'s2-spot', opts:[
+    {t:'<b>Fact:</b> The net force is in the direction of acceleration. <b>Reasoning:</b> The larger force (12 N) points right, so the net force is to the right. So the sled’s acceleration is to the right.', ok:true, fb:'A real fact, then reasoning that applies it to the sled’s forces.'},
+    {t:'The sled accelerates to the right because it is being pushed harder to the right.', fb:'Right direction, but there’s no fact. Every justification starts with a fact of physics.'},
+    {t:'<b>Fact:</b> Objects move in the direction of the net force. <b>Reasoning:</b> The sled is moving right, so the acceleration is right.', fb:'That "fact" isn’t true, and the problem never says which way the sled moves.'},
+    {t:'12 − 5 = 7, so the acceleration is to the right.', fb:'A calculation alone isn’t a justification. It needs a fact and reasoning that explain the direction.'} ]});
+}
+
+/* ====================== SECTION 3 ====================== */
+function buildS3(){
+  mcq($('#s3poll'),{q:'Make your best prediction. (Any answer is fine for now.)', poll:true, gate:'s3-poll', noShuffle:true, opts:[
+    {t:'To the left', fb:'That’s the most common answer. The net force is left… but does that mean the cart has to move left? Let’s test it.'},
+    {t:'To the right', fb:'Interesting! The net force is to the left, so why might the cart move right? Let’s test it.'},
+    {t:'We can’t tell from this information', fb:'You’re onto something. Let’s see exactly why.'} ]});
+
+  msim.build($('#msim'));
+
+  selGroup($('#mobs'),{
+    title:'Trial A: the cart started moving LEFT.',
+    items:[
+      {html:'In Trial A, the net force on the cart pointed {S}.', opts:['left','right'], ans:'left', hint:'3 N left and 2 N right: the larger force is left.'},
+      {html:'While moving left, the cart was {S}.', opts:['speeding up','slowing down','moving at a constant speed'], ans:'speeding up', hint:'Look at the motion diagram: were the dots getting farther apart or closer together?'},
+      {html:'<b>Trial B: the cart started moving RIGHT.</b><br>In Trial B, the net force on the cart pointed {S}.', opts:['left','right'], ans:'left', hint:'The forces didn’t change: still 3 N left and 2 N right.'},
+      {html:'At first, while moving right, the cart was {S}.', opts:['speeding up','slowing down','moving at a constant speed'], ans:'slowing down', hint:'Watch the velocity arrow at the start of Trial B. Did it get longer or shorter?'},
+      {html:'After the cart stopped, it {S}.', opts:['stayed stopped','started moving left and speeding up','kept moving right'], ans:'started moving left and speeding up', hint:'Run Trial B again and watch what happens after the velocity reaches 0.'},
+      {html:'Both trials had the same net force. Did the cart always move in the direction of the net force? {S}', opts:['Yes','No'], ans:'No', hint:'In Trial B the cart moved right at first, but the net force was left.'} ],
+    requires:()=>msim.trialA&&msim.trialB, requiresMsg:'Run both trials in the simulation first (keep 3 N left and 2 N right).',
+    good:'Same net force (1 N left), but two different motions!', gate:'s3-obs'});
+
+  selGroup($('#s3grid'),{
+    title:'Use the two things you need: the direction of acceleration AND speeding up or slowing down.',
+    items:[
+      {html:'1. The net force on a cart is to the <b>right</b>, and the cart is <b>speeding up</b>. The cart is moving {S}.', opts:['left','right','can’t tell'], ans:'right', hint:'When an object speeds up, its acceleration is in the direction of motion.'},
+      {html:'2. The net force on a cart is to the <b>right</b>, and the cart is <b>slowing down</b>. The cart is moving {S}.', opts:['left','right','can’t tell'], ans:'left', hint:'When an object slows down, its acceleration is opposite the direction of motion.'},
+      {html:'3. The net force on a cart is to the <b>left</b>, and the cart is <b>slowing down</b>. The cart is moving {S}.', opts:['left','right','can’t tell'], ans:'right', hint:'Slowing down means the motion is opposite the acceleration (and the net force).'},
+      {html:'4. The net force on a cart is to the <b>left</b>. The cart is moving {S}.', opts:['left','right','can’t tell'], ans:'can’t tell', hint:'You only know ONE of the two things you need.'},
+      {html:'5. A ball’s acceleration is <b>down</b>, and the ball is moving <b>up</b>. The ball is {S}.', opts:['speeding up','slowing down','moving at a constant speed'], ans:'slowing down', hint:'Acceleration opposite the direction of motion means slowing down.'} ],
+    good:'You’ve got it: direction of acceleration + speeding up or slowing down gives the direction of motion.', gate:'s3-grid'});
+
+  const L=$('#s3left');
+  mcq(L,{q:'Part 1. Could the cart be moving left at 1 m/s?', gate:'s3-l1', noShuffle:true, opts:[
+    {t:'Yes', ok:true, fb:'Yes! Now let’s describe a situation where this happens.'},
+    {t:'No', fb:'Think back to Trial A in the simulation. With these same forces, did the cart ever move left?'} ]});
+  mcq(L,{q:'Part 2. Which situation makes this possible?', gate:'s3-l2', opts:[
+    {t:'The cart is moving left and speeding up. At one instant, its speed is 1 m/s.', ok:true, fb:'The acceleration is left, the same direction as the motion, so the cart speeds up. Its speed passes through 1 m/s. (It could also have started moving right and slowing down, stopped, and then started moving left and speeding up, passing 1 m/s.)'},
+    {t:'The cart is moving left and slowing down. At one instant, its speed is 1 m/s.', fb:'If a cart moves left and slows down, its acceleration is opposite its motion, which is to the right. But the net force (and acceleration) here is to the left.'},
+    {t:'The cart is moving left at a constant speed of 1 m/s.', fb:'The net force isn’t zero, so the cart has an acceleration. Its speed must be changing.'} ]});
+  fillJust(L,{lead:'<b>Part 3.</b> Now complete the justification. Use an <b>acceleration fact</b>.',
+    facts:[
+      {t:'When an object speeds up, its acceleration is in the direction of motion.', ok:true},
+      {t:'When an object slows down, its acceleration is opposite the direction of motion.', fb:'This fact is about slowing down. Here the cart moves left and its acceleration is also left. Is it speeding up or slowing down?'},
+      {t:'Objects in free fall gain or lose 10 m/s of speed every second.', fb:'The cart isn’t in free fall, so this fact doesn’t apply.'},
+      {t:'The net force is in the direction of acceleration.', fb:'You’ll use this idea in the reasoning, but the question asks for an <b>acceleration</b> fact that connects acceleration to the direction of motion.'} ],
+    reason:'The net force on the cart is to the {0}, so its acceleration is to the {1}. If the cart is moving {2}, its acceleration is in the direction of motion, so the cart is {3}. As it speeds up, at some instant it will be moving 1 m/s to the left.',
+    blanks:[{opts:['left','right'],ans:'left'},{opts:['left','right'],ans:'left'},{opts:['left','right'],ans:'left'},{opts:['speeding up','slowing down','moving at a constant speed'],ans:'speeding up'}],
+    hint:'3 N left beats 2 N right. Acceleration in the same direction as motion means speeding up.', gate:'s3-lw'});
+
+  const K=$('#s3const');
+  mcq(K,{q:'Part 1. Could the cart be moving left at a constant speed of 1 m/s?', gate:'s3-c1', noShuffle:true, opts:[
+    {t:'Yes', fb:'For constant speed, the speed can’t change at all. Is there an acceleration here?'},
+    {t:'No', ok:true, fb:'Correct. Now pick the acceleration fact that explains why.'} ]});
+  mcq(K,{q:'Part 2. Which acceleration <b>Fact</b> justifies your answer?', gate:'s3-c2', opts:[
+    {t:'Acceleration tells how much an object\u2019s speed changes in one second.', ok:true, fb:'That\u2019s the fact. Now choose the reasoning.'},
+    {t:'Objects in free fall gain or lose 10 m/s of speed every second.', fb:'The cart isn\u2019t in free fall, so this fact doesn\u2019t apply.'},
+    {t:'The units of acceleration are m/s per second.', fb:'True, but units don\u2019t explain whether the speed can stay the same.'} ]});
+  mcq(K,{q:'Part 3. Which <b>Reasoning</b> applies that fact to this cart?', gate:'s3-c3', opts:[
+    {t:'The net force on the cart is 1 N to the left, not zero, so the cart has an acceleration. Because it has an acceleration, its speed must change every second, so it can\u2019t move at a constant speed.', ok:true, fb:'Here\u2019s the full justification: <div class="model" style="margin-top:6px"><span class="f">Fact:</span> Acceleration tells how much an object\u2019s speed changes in one second. <span class="r">Reasoning:</span> The net force on the cart is 1 N to the left, not zero, so the cart has an acceleration to the left. Because the cart has an acceleration, its speed must change every second. So the cart cannot move at a constant speed.</div>'},
+    {t:'The cart is moving to the left, so the net force must point to the left.', fb:'The direction of motion doesn\u2019t tell you the net force, and this doesn\u2019t explain whether the speed can stay constant.'},
+    {t:'The forces on the cart are small (only 3 N and 2 N), so its speed stays about the same.', fb:'Any nonzero net force causes an acceleration, so the speed changes, even if slowly.'},
+    {t:'Two forces act on the cart, and forces are needed to keep an object moving at a constant speed.', fb:'Constant speed needs a net force of <b>zero</b> (equilibrium), not extra forces. Here the net force is 1 N left.'} ]});
+}
+
+/* ---------- motion simulator (Section 3) ---------- */
+const msim={
+  Fl:3, Fr:2, dir:-1, sp:2, m:1, t:0, x:10, v:0, v0:0, a:0, playing:false, dots:[], nextDot:0, trialA:false, trialB:false, msg:'',
+  build(host){
+    host.innerHTML=`<div class="sim">
+      <canvas id="mCan" height="260" aria-label="Cart on a track"></canvas>
+      <div class="status" id="mStat"></div>
+      <div class="ctl-grid">
+        <div class="fctl"><div class="fctl-title">Force to the left: <span id="mFlv"></span></div><input type="range" id="mFl" min="0" max="5" step="1"></div>
+        <div class="fctl"><div class="fctl-title">Force to the right: <span id="mFrv"></span></div><input type="range" id="mFr" min="0" max="5" step="1"></div>
+        <div class="fctl"><div class="fctl-title">Starting velocity: <span id="mSpv"></span></div>
+          <div class="row" style="margin-bottom:6px"><div class="seg" id="mDir"><button type="button" data-d="-1">&larr; Moving left</button><button type="button" data-d="1">Moving right &rarr;</button></div></div>
+          <input type="range" id="mSp" min="0" max="3" step="0.5" aria-label="Starting speed"></div>
+      </div>
+      <div class="row" style="margin-top:12px"><button class="btn primary" type="button" id="mPlay">Play</button><button class="btn" type="button" id="mReset">Reset</button><span class="small muted">Cart mass: 1 kg</span></div>
+      <div id="mTrials" style="margin-top:10px"></div></div>`;
+    this.can=$('#mCan'); this.ctx=this.can.getContext('2d');
+    $('#mFl').oninput=e=>{ this.Fl=+e.target.value; this.reset(); };
+    $('#mFr').oninput=e=>{ this.Fr=+e.target.value; this.reset(); };
+    $('#mSp').oninput=e=>{ this.sp=+e.target.value; this.reset(); };
+    $$('#mDir button').forEach(b=>b.onclick=()=>{ this.dir=+b.dataset.d; this.reset(); });
+    $('#mPlay').onclick=()=>this.toggle();
+    $('#mReset').onclick=()=>this.reset();
+    window.addEventListener('resize',()=>this.resize());
+    this.reset(); this.resize();
+  },
+  syncUI(){
+    $('#mFl').value=this.Fl; $('#mFr').value=this.Fr; $('#mSp').value=this.sp;
+    $('#mFlv').textContent=this.Fl+' N'; $('#mFrv').textContent=this.Fr+' N';
+    $('#mSpv').textContent=this.sp.toFixed(1)+' m/s '+(this.sp===0?'':(this.dir<0?'left':'right'));
+    $$('#mDir button').forEach(b=>b.classList.toggle('on', +b.dataset.d===this.dir));
+    const good=this.Fl===3&&this.Fr===2;
+    $('#mTrials').innerHTML=`
+      <div class="trial ${this.trialA?'ok':''}"><span><b>Trial A:</b> 3 N left, 2 N right. Start the cart <b>moving left</b> at 2 m/s. Press Play.</span><span class="st">${this.trialA?'✓ Done':'Not yet'}</span></div>
+      <div class="trial ${this.trialB?'ok':''}"><span><b>Trial B:</b> 3 N left, 2 N right. Start the cart <b>moving right</b> at 2 m/s. Press Play and watch the whole run.</span><span class="st">${this.trialB?'✓ Done':'Not yet'}</span></div>
+      ${good?'':'<p class="small" style="color:var(--warn)">Trials only count with 3 N left and 2 N right. (You can explore other forces any time.)</p>'}`;
+  },
+  reset(){
+    this.playing=false; this.t=0; this.v0=this.dir*this.sp; this.v=this.v0; this.a=(this.Fr-this.Fl)/this.m;
+    this.x = this.v0<0 ? 14 : (this.v0>0 ? 6 : 10);
+    if(this.v0===0) this.x = this.a<0 ? 14 : (this.a>0? 6 : 10);
+    this.x0=this.x; this.dots=[this.x]; this.nextDot=0.5; this.msg='';
+    if($('#mPlay')) $('#mPlay').textContent='Play';
+    this.syncUI(); this.draw();
+  },
+  toggle(){
+    if(this.playing){ this.playing=false; $('#mPlay').textContent='Play'; return; }
+    if(this.done) this.reset();
+    if(this.t===0 && this.Fl===3 && this.Fr===2 && this.sp>0){ this.pendingTrial = this.dir<0?'A':'B'; } else if(this.t===0) this.pendingTrial=null;
+    this.done=false; this.playing=true; $('#mPlay').textContent='Pause'; this.last=performance.now();
+    const step=(now)=>{
+      if(!this.playing) return;
+      let dt=Math.min(0.05,(now-this.last)/1000); this.last=now;
+      this.t+=dt;
+      this.v=this.v0+this.a*this.t; this.x=this.x0+this.v0*this.t+0.5*this.a*this.t*this.t;
+      while(this.t>=this.nextDot){ const tt=this.nextDot; this.dots.push(this.x0+this.v0*tt+0.5*this.a*tt*tt); this.nextDot+=0.5; }
+      let end=false;
+      if(this.x<2.5){ this.x=2.5; end=true; this.msg='The cart reached the left end of the track.'; }
+      if(this.x>17.5){ this.x=17.5; end=true; this.msg='The cart reached the right end of the track.'; }
+      if(this.t>=7){ end=true; this.msg='Time’s up (7 s).'; }
+      if(end){
+        this.playing=false; this.done=true; $('#mPlay').textContent='Play again';
+        if(this.pendingTrial==='A' && this.t>1) this.trialA=true;
+        if(this.pendingTrial==='B' && this.t>3) this.trialB=true;
+        this.syncUI();
+      }
+      this.draw();
+      if(this.playing) requestAnimationFrame(step);
+    };
+    requestAnimationFrame(step);
+  },
+  resize(){
+    if(!this.can) return; const w=this.can.clientWidth||700; const dpr=window.devicePixelRatio||1;
+    this.W=w; this.H=260; this.can.width=w*dpr; this.can.height=260*dpr; this.can.style.height='260px'; this.ctx.setTransform(dpr,0,0,dpr,0,0); this.draw();
+  },
+  px(x){ const m=30; return m + x/20*(this.W-2*m); },
+  status(){
+    const v=this.v, a=this.a; let s;
+    if(Math.abs(v)<0.05){ s = a===0? 'at rest' : 'stopped for an instant'; }
+    else if(a===0) s='moving at a constant speed';
+    else s = (Math.sign(v)===Math.sign(a))? 'speeding up' : 'slowing down';
+    return s;
+  },
+  draw(){
+    const c=this.ctx; if(!c||!this.W) return; const W=this.W, H=this.H; c.clearRect(0,0,W,H);
+    const ty=222; // track top
+    // motion diagram
+    c.fillStyle='#586377'; c.font='600 12px system-ui,Arial'; c.textAlign='left'; c.fillText('Motion diagram (one dot every 0.5 s)',10,16);
+    c.strokeStyle='#e3e7f0'; c.lineWidth=1; c.beginPath(); c.moveTo(this.px(0),34); c.lineTo(this.px(20),34); c.stroke();
+    this.dots.forEach(d=>{ c.fillStyle='#1b2233'; c.beginPath(); c.arc(this.px(d),34,4.5,0,7); c.fill(); });
+    // track
+    c.fillStyle='#c9d1e0'; c.fillRect(this.px(0)-10,ty,this.px(20)-this.px(0)+20,8);
+    c.fillStyle='#8894ab'; c.font='11px system-ui,Arial'; c.textAlign='center';
+    const tstep = W<520 ? 4 : 2;
+    for(let i=0;i<=20;i+=2){ c.fillRect(this.px(i)-1,ty+8,2,6); if(i%tstep===0) c.fillText(i+' m',this.px(i),ty+26); }
+    const f=Math.max(0.55,Math.min(1,W/800));
+    // cart
+    const X=this.px(this.x), cw=Math.round(70*Math.max(0.8,f)), ch=30, cy=ty-10-ch;
+    c.fillStyle='#dfe6f5'; c.strokeStyle='#6a7a9c'; c.lineWidth=2; rr(c,X-cw/2,cy,cw,ch,6); c.fill(); c.stroke();
+    c.fillStyle='#44506a'; [X-20,X+20].forEach(wx=>{ c.beginPath(); c.arc(wx,ty-6,6,0,7); c.fill(); });
+    // forces on cart
+    const k=16*f, my=cy+ch/2;
+    if(this.Fl>0){ carrow(c,X-cw/2,my,X-cw/2-this.Fl*k,my,C.force,4); c.fillStyle=C.force; c.font='700 12px system-ui,Arial'; { const t=this.Fl+' N', w=c.measureText(t).width, x=X-cw/2-this.Fl*k-4-w; c.textAlign='left'; if(x>=4) c.fillText(t,x,my+4); else c.fillText(t,4,my-9); } }
+    if(this.Fr>0){ carrow(c,X+cw/2,my,X+cw/2+this.Fr*k,my,C.force,4); c.fillStyle=C.force; c.font='700 12px system-ui,Arial'; { const t=this.Fr+' N', w=c.measureText(t).width, x=X+cw/2+this.Fr*k+4; c.textAlign='left'; if(x+w<=W-4) c.fillText(t,x,my+4); else c.fillText(t,W-4-w,my-9); } }
+    // net force
+    const net=this.Fr-this.Fl, ny=cy-16;
+    c.font='700 13px system-ui,Arial';
+    if(net!==0){ carrow(c,X,ny,X+net*28*f,ny,C.net,5); c.fillStyle=C.net; alabel(c,'net force '+Math.abs(net)+' N '+(net<0?'left':'right'), X, X+net*28*f, ny+5, W); }
+    else { c.fillStyle=C.net; ctext(c,'net force 0',X,ny+4,'center',W); }
+    // velocity
+    const vy=cy-50; const v=this.v;
+    if(Math.abs(v)>0.05){ carrow(c,X,vy,X+v*26*f,vy,C.vel,5); c.fillStyle=C.vel; alabel(c,'velocity '+Math.abs(v).toFixed(1)+' m/s '+(v<0?'left':'right'), X, X+v*26*f, vy+5, W); }
+    else { c.fillStyle=C.vel; ctext(c,'velocity 0',X,vy+4,'center',W); }
+    // status
+    const s=this.status();
+    const chip = s==='speeding up'?'up':(s==='slowing down'?'down':'');
+    const st=$('#mStat'); if(st) st.innerHTML=`<span>Time: <b>${this.t.toFixed(1)} s</b></span><span>Velocity: <b>${Math.abs(v)<0.05?'0':Math.abs(v).toFixed(1)+' m/s '+(v<0?'left':'right')}</b></span><span>The cart is: <span class="chip ${chip}">${s}</span></span>${this.msg?'<span class="muted">'+this.msg+'</span>':''}`;
+  }
+};
+function ctext(c,t,x,y,align,W){ const w=c.measureText(t).width; let L = align==='right'? x-w : (align==='center'? x-w/2 : x); L=Math.max(4,Math.min(L,W-4-w)); c.textAlign='left'; c.fillText(t,L,y); }
+function alabel(c,t,tailX,tipX,y,W){ const w=c.measureText(t).width; let x;
+  if(tipX<tailX){ x=tipX-6-w; if(x<4) x=tailX+8; } else { x=tipX+6; if(x+w>W-4) x=tailX-8-w; }
+  x=Math.max(4,Math.min(x,W-4-w)); c.textAlign='left'; c.fillText(t,x,y); }
+function rr(c,x,y,w,h,r){ c.beginPath(); c.moveTo(x+r,y); c.arcTo(x+w,y,x+w,y+h,r); c.arcTo(x+w,y+h,x,y+h,r); c.arcTo(x,y+h,x,y,r); c.arcTo(x,y,x+w,y,r); c.closePath(); }
+function carrow(c,x1,y1,x2,y2,color,w){
+  const dx=x2-x1, dy=y2-y1, len=Math.hypot(dx,dy); if(len<2) return;
+  const ux=dx/len, uy=dy/len, hl=Math.min(12,len*0.6), hw=7, bx=x2-ux*hl, by=y2-uy*hl;
+  c.strokeStyle=color; c.lineWidth=w; c.lineCap='round'; c.beginPath(); c.moveTo(x1,y1); c.lineTo(bx,by); c.stroke();
+  c.fillStyle=color; c.beginPath(); c.moveTo(x2,y2); c.lineTo(bx-uy*hw,by+ux*hw); c.lineTo(bx+uy*hw,by-ux*hw); c.closePath(); c.fill();
+}
+
+/* ====================== SECTION 4 ====================== */
+function buildS4(){
+  const w=$('#s4w');
+  numq(w,{q:'A cart has a mass of 10 kg. What is its weight on Earth?', ans:100, unit:'N', gate:'s4-w1', hint:'Use W = mg with g = 10.'});
+  numq(w,{q:'A box weighs 150 N on Earth. What is its mass?', ans:15, unit:'kg', gate:'s4-w2', hint:'Use W = mg: 150 = (m)(10). Solve for m.'});
+
+  $('#s4fbd').innerHTML=`<div class="sim"><svg class="fbd-svg" viewBox="0 0 460 250" role="img" aria-label="Free-body diagram of the 10 kg cart">
+    <rect x="190" y="100" width="80" height="50" rx="8" fill="#dfe6f5" stroke="#6a7a9c" stroke-width="2"/>${svgText(230,130,'10 kg',C.muted,'middle',14,600)}
+    ${svgArrow(190,125,85,125,C.force)}${svgText(120,112,'3 N',C.force)}
+    ${svgArrow(270,125,340,125,C.force)}${svgText(310,112,'2 N',C.force)}
+    ${svgArrow(230,100,230,25,C.normal)}${svgText(242,36,'Normal force = ?',C.normal,'start',14)}${svgText(242,52,'(force of track on cart)',C.muted,'start',12,500)}
+    ${svgArrow(230,150,230,225,C.weight)}${svgText(242,205,'Weight = 100 N',C.weight,'start',14)}${svgText(242,221,'(force of Earth on cart)',C.muted,'start',12,500)}
+    </svg></div>`;
+
+  const ex=$('#s4ex');
+  mcq(ex,{q:'a. Which way is the cart’s acceleration?', gate:'s4-e1', opts:[
+    {t:'Left', ok:true, fb:'The net force is to the left (3 N > 2 N), and the net force is in the direction of acceleration.'},
+    {t:'Right', fb:'The larger force points left, so the net force is left. Acceleration is in the direction of the net force.'},
+    {t:'Down', fb:'The cart rolls along the track. It doesn’t speed up or slow down vertically.'} ]});
+  mcq(ex,{q:'b. Which equation should you start with for the horizontal direction?', gate:'s4-e2', opts:[
+    {t:'(left forces) – (right forces) = ma', ok:true, fb:'Start in the direction of acceleration (left), so the net force comes out positive.'},
+    {t:'(right forces) – (left forces) = ma', fb:'That gives 2 − 3, a "negative" net force. Start the equation in the direction of acceleration.'},
+    {t:'(left forces) + (right forces) = ma', fb:'Forces acting in opposite directions subtract, not add.'} ]});
+  // equation fill
+  const box=el('div','q');
+  box.innerHTML=`<div class="qtext">c. Fill in the equation and solve for the acceleration.</div>
+    <div class="eq">(left forces) – (right forces) = ma</div>
+    <div class="eq">( <input type="text" inputmode="decimal" data-a="3" aria-label="left forces"> N ) – ( <input type="text" inputmode="decimal" data-a="2" aria-label="right forces"> N ) = ( <input type="text" inputmode="decimal" data-a="10" aria-label="mass"> kg ) · a</div>
+    <div class="eq">a = <input type="text" inputmode="decimal" data-a="0.1" aria-label="acceleration"> m/s per second</div>`;
+  const row=el('div','row'); const btn=el('button','btn','Check'); btn.type='button'; row.appendChild(btn); const fb=el('div','fb'); box.append(row,fb); ex.appendChild(box);
+  btn.onclick=()=>{
+    let ok=true; box.querySelectorAll('input').forEach(i=>{ const v=parseNum(i.value); const g=!isNaN(v)&&near(v,+i.dataset.a); i.classList.toggle('ok',g); i.classList.toggle('no',!g); if(!g) ok=false; });
+    if(ok){ box.classList.add('done'); btn.disabled=true; box.querySelectorAll('input').forEach(i=>i.disabled=true); fb.className='fb good'; fb.innerHTML='✓ 3 − 2 = 10a, so 1 = 10a, and a = 0.1 m/s per second. That means the cart’s speed changes by 0.1 m/s every second.'; gate('s4-e3'); }
+    else { fb.className='fb bad'; fb.innerHTML='Check the boxes in red. Left forces: the 3 N force. Right forces: the 2 N force. Mass: 10 kg. Then a = (net force) ÷ (mass).'; }
+  };
+  numq(ex,{q:'d. The cart doesn’t speed up or slow down vertically, so (up forces) – (down forces) = 0. What is the normal force of the track on the cart?', ans:100, unit:'N', gate:'s4-e4', good:'Correct! With no vertical acceleration, up forces = down forces, so the normal force equals the 100 N weight.', hint:'Up forces = down forces. The only down force is the 100 N weight.'});
+
+  const p=$('#s4p');
+  numq(p,{q:'a. What is the weight of the block?', ans:40, unit:'N', gate:'s4-p1', hint:'1 kg of mass weighs 10 N.'});
+  mcq(p,{q:'b. Which way is the block’s acceleration?', gate:'s4-p2', opts:[
+    {t:'Down', ok:true, fb:'The weight (40 N down) is larger than the rope’s 30 N pull up, so the net force and the acceleration are down.'},
+    {t:'Up', fb:'Compare the forces: 40 N down and 30 N up. The larger force points in the direction of the net force.'},
+    {t:'There is no acceleration', fb:'40 N and 30 N aren’t balanced, so there is a net force and an acceleration.'} ]});
+  mcq(p,{q:'c. Which equation should you start with?', gate:'s4-p3', opts:[
+    {t:'(down forces) – (up forces) = ma', ok:true, fb:'Acceleration is down, so start with the down forces.'},
+    {t:'(up forces) – (down forces) = ma', fb:'That gives 30 − 40, a negative net force. Start in the direction of acceleration: down.'},
+    {t:'(weight) = ma, so 40 = 4a', fb:'That’s The Mistake! Only the <i>net</i> force equals ma. The rope pulls on the block too.'} ]});
+  numq(p,{q:'d. Calculate the amount of the block’s acceleration.', ans:2.5, unit:'m/s per second', gate:'s4-p4', good:'Correct! 40 − 30 = 4a, so 10 = 4a and a = 2.5 m/s per second, downward.', hint:'(down forces) – (up forces) = ma → 40 − 30 = (4)(a).'});
+}
+
+/* ====================== SECTION 5 ====================== */
+const esim={
+  motions:[
+    {id:'rest',t:'At rest',v0:0,a:0},
+    {id:'upc',t:'Moving up at a constant speed',v0:3,a:0},
+    {id:'upf',t:'Moving up and speeding up',v0:0.5,a:2},
+    {id:'ups',t:'Moving up and slowing down',v0:6,a:-2},
+    {id:'dnc',t:'Moving down at a constant speed',v0:-3,a:0},
+    {id:'dnf',t:'Moving down and speeding up',v0:-0.5,a:-2},
+    {id:'dns',t:'Moving down and slowing down',v0:-6,a:2}
+  ],
+  cur:null, t:0, off:0, tried:new Set(), running:false,
+  build(host){
+    host.innerHTML=`<div class="sim"><div class="elev-wrap">
+      <canvas id="eCan" height="380" aria-label="Elevator with a student on a scale"></canvas>
+      <div>
+        <div class="motion-list" id="eList">${this.motions.map(m=>`<label><input type="radio" name="emo" value="${m.id}"> <span>${m.t}</span><span class="tried" data-t="${m.id}"></span></label>`).join('')}</div>
+        <p class="small muted" id="eCount"></p>
+        <svg id="eFbd" viewBox="0 0 360 230" role="img" aria-label="Free-body diagram of the student" style="margin-top:6px"></svg>
+        <div class="readout" id="eOut">Choose a motion to start the elevator.</div>
+      </div></div></div>`;
+    this.can=$('#eCan'); this.ctx=this.can.getContext('2d');
+    $$('#eList input').forEach(r=>r.onchange=()=>this.select(r.value));
+    window.addEventListener('resize',()=>this.resize());
+    this.resize(); this.drawFbd(); this.updCount();
+  },
+  select(id){
+    this.cur=this.motions.find(m=>m.id===id); this.t=0; this.tried.add(id);
+    const tag=$(`#eList [data-t="${id}"]`); if(tag) tag.textContent='✓ tried';
+    this.updCount(); this.drawFbd();
+    if(this.tried.size===7) gate('s5-sim');
+    if(!this.running){ this.running=true; this.last=performance.now(); requestAnimationFrame(n=>this.step(n)); }
+  },
+  updCount(){ $('#eCount').textContent=`Motions tried: ${this.tried.size} of 7`; },
+  reading(){ return this.cur? 600+60*this.cur.a : 600; },
+  step(now){
+    const dt=Math.min(0.05,(now-this.last)/1000); this.last=now;
+    if(this.cur){ this.t+=dt; if(this.t>2.75) this.t=0; const v=this.cur.v0+this.cur.a*this.t; this.off+=v*dt*30; }
+    if(!$('#s5').classList.contains('hidden')) this.draw();
+    requestAnimationFrame(n=>this.step(n));
+  },
+  resize(){
+    if(!this.can) return; const w=this.can.clientWidth||300; const dpr=window.devicePixelRatio||1;
+    this.W=w; this.H=380; this.can.width=w*dpr; this.can.height=380*dpr; this.can.style.height='380px'; this.ctx.setTransform(dpr,0,0,dpr,0,0); this.draw();
+  },
+  draw(){
+    const c=this.ctx; if(!c||!this.W) return; const W=this.W, H=this.H;
+    c.fillStyle='#2b3246'; c.fillRect(0,0,W,H);
+    // floors scroll: elevator moving up -> floors move down on screen
+    const spacing=110; let o=((this.off%spacing)+spacing)%spacing;
+    c.strokeStyle='#58627c'; c.lineWidth=3; c.fillStyle='#9aa5bf'; c.font='600 11px system-ui,Arial'; c.textAlign='left';
+    for(let y=-spacing+o; y<H+spacing; y+=spacing){ c.beginPath(); c.moveTo(0,y); c.lineTo(W,y); c.stroke(); }
+    const cx=W*0.42, ew=Math.min(170,W*0.56), eh=200, ex=cx-ew/2, ey=90;
+    // cable
+    c.strokeStyle='#c7cedd'; c.lineWidth=2; c.beginPath(); c.moveTo(cx,0); c.lineTo(cx,ey); c.stroke();
+    // car
+    c.fillStyle='#f4f6fb'; c.strokeStyle='#9aa5bf'; c.lineWidth=3; c.fillRect(ex,ey,ew,eh); c.strokeRect(ex,ey,ew,eh);
+    // scale
+    const sy=ey+eh-26; c.fillStyle='#44506a'; rr(c,cx-40,sy,80,18,4); c.fill();
+    c.fillStyle='#bff5cf'; c.fillRect(cx-26,sy+3,52,12); c.fillStyle='#0c3b1c'; c.font='700 10px ui-monospace,monospace'; c.textAlign='center';
+    c.fillText(this.reading()+' N', cx, sy+12);
+    // person
+    c.strokeStyle='#1b2233'; c.lineWidth=4; c.lineCap='round';
+    const fy=sy; c.beginPath(); c.moveTo(cx-10,fy); c.lineTo(cx,fy-40); c.lineTo(cx+10,fy); c.moveTo(cx,fy-40); c.lineTo(cx,fy-85); c.moveTo(cx-20,fy-65); c.lineTo(cx,fy-78); c.lineTo(cx+20,fy-65); c.stroke();
+    c.fillStyle='#1b2233'; c.beginPath(); c.arc(cx,fy-98,12,0,7); c.fill();
+    // big scale readout on top
+    c.fillStyle='#0f1424'; rr(c,cx-62,16,124,40,8); c.fill(); c.fillStyle='#8ff0ad'; c.font='700 20px ui-monospace,monospace'; c.fillText(this.reading()+' N',cx,43);
+    c.fillStyle='#c7cedd'; c.font='600 11px system-ui,Arial'; c.fillText('scale reading',cx,72);
+    // arrows at right
+    const ax=Math.min(W-28, ex+ew+34);
+    if(this.cur){
+      const v=this.cur.v0+this.cur.a*this.t;
+      c.font='700 12px system-ui,Arial'; c.textAlign='center';
+      if(Math.abs(v)>0.05){ carrow(c,ax-16,190,ax-16,190-v*14,'#4fd08a',5); } c.fillStyle='#4fd08a'; c.fillText('v',ax-16,316);
+      if(this.cur.a!==0){ carrow(c,ax+14,190,ax+14,190-this.cur.a*28,'#c49bff',5); } c.fillStyle='#c49bff'; c.fillText('a',ax+14,316);
+      c.fillStyle='#c7cedd'; c.font='11px system-ui,Arial'; c.fillText(this.cur.a===0?'a = 0':'', ax+14, 332);
+    }
+  },
+  drawFbd(){
+    const N=this.reading(); const Lw=80, Ln=Math.round(N/600*80);
+    const cx=90, cy=115; let s='';
+    s+=`<circle cx="${cx}" cy="${cy}" r="9" fill="#1b2233"/>`;
+    s+=svgArrow(cx,cy-9,cx,cy-9-Ln,C.normal)+svgText(cx+16,cy-Ln+6,`Normal force: ${N} N`,C.normal,'start',14)+svgText(cx+16,cy-Ln+22,'(force of scale on student)',C.muted,'start',12,500);
+    s+=svgArrow(cx,cy+9,cx,cy+9+Lw,C.weight)+svgText(cx+16,cy+Lw-4,'Weight: 600 N',C.weight,'start',14)+svgText(cx+16,cy+Lw+12,'(force of Earth on student)',C.muted,'start',12,500);
+    $('#eFbd').innerHTML=s;
+    const net=N-600;
+    $('#eOut').innerHTML = this.cur ? `<b>${this.cur.t}.</b> Scale reads <b>${N} N</b>. Net force: <b>${net===0?'0 N':Math.abs(net)+' N '+(net>0?'up':'down')}</b>. Acceleration: <b>${this.cur.a===0?'zero':'2 m/s per second '+(this.cur.a>0?'up':'down')}</b>.` : 'Choose a motion to start the elevator.';
+  }
+};
+
+function buildS5(){
+  esim.build($('#esim'));
+  const q=$('#s5q');
+  mcq(q,{q:'1. When the scale reads MORE than the student’s 600 N weight, which way is the net force on the student?', gate:'s5-q1', opts:[
+    {t:'Up', ok:true, fb:'The normal force (up) is larger than the weight (down), and the larger force points in the direction of the net force.'},
+    {t:'Down', fb:'Compare the arrows: the normal force (up) is bigger than the 600 N weight.'},
+    {t:'It depends on which way the elevator is moving', fb:'The net force depends only on the forces. Compare the normal force (up) to the weight (down).'} ]});
+  mcq(q,{q:'2. The scale reads 480 N. Which motions are possible?', gate:'s5-q2', opts:[
+    {t:'Moving down and speeding up, OR moving up and slowing down', ok:true, fb:'480 N < 600 N, so the net force and acceleration are down. Downward acceleration means moving down and speeding up, or moving up and slowing down.'},
+    {t:'Moving up and speeding up, OR moving down and slowing down', fb:'Those two motions have an UPWARD acceleration, and they made the scale read more than 600 N.'},
+    {t:'Only moving down', fb:'The net force is down, but that doesn’t tell you the direction of motion by itself!'},
+    {t:'Only at rest or constant speed', fb:'At rest or constant speed, the net force is zero, so the scale reads exactly 600 N.'} ]});
+
+  const p=$('#s5p');
+  numq(p,{q:'a. The weight of the student', ans:600, unit:'N', gate:'s5-p1', hint:'The problem gives it directly: a 600 N student.'});
+  numq(p,{q:'b. The mass of the student', ans:60, unit:'kg', gate:'s5-p2', hint:'On Earth, 1 kg of mass weighs 10 N. Divide the weight by 10.'});
+  numq(p,{q:'c. The normal force of the scale on the student', ans:720, unit:'N', gate:'s5-p3', hint:'A platform scale reads the normal force.'});
+  mcq(p,{q:'d. The direction of the net force on the student', gate:'s5-p4', noShuffle:true, opts:[
+    {t:'Up', ok:true, fb:'The normal force (720 N up) is larger than the weight (600 N down).'},
+    {t:'Down', fb:'Which is larger: 720 N up or 600 N down? The larger force points in the direction of the net force.'},
+    {t:'Zero (no direction)', fb:'720 N and 600 N aren’t balanced.'} ]});
+  numq(p,{q:'e. The magnitude (amount) of the net force on the student', ans:120, unit:'N', gate:'s5-p5', hint:'Forces in opposite directions subtract: 720 − 600.'});
+  numq(p,{q:'f. The acceleration of the student', ans:2, unit:'m/s per second', gate:'s5-p6', good:'Correct! (up forces) – (down forces) = ma → 720 − 600 = 60a → a = 2 m/s per second, upward. The elevator is moving up and speeding up, or moving down and slowing down.', hint:'(up forces) – (down forces) = ma → 720 − 600 = (60)(a).'});
+}
+
+/* ====================== FINAL CFU ====================== */
+const CFU_VARIANTS=[{W:100,S:50},{W:200,S:150},{W:80,S:100},{W:500,S:600},{W:300,S:240},{W:40,S:60}];
+let CFU=null;
+function genCFU(){
+  let vi;
+  if(S.cfu.attempts===0) vi=0; else { const pool=[1,2,3,4,5].filter(i=>i!==S.cfu.lastVariant); vi=pick(pool); }
+  S.cfu.lastVariant=vi;
+  const {W,S:Sc}=CFU_VARIANTS[vi]; const m=W/10, net=Math.abs(W-Sc), down=Sc<W, a=net/m;
+  const dir=down?'down':'up', opp=down?'up':'down';
+  const pairs=[[7,4],[9,5],[12,5],[8,3],[10,6],[11,4]]; const [F1,F2]=pick(pairs); const bigRight=Math.random()<.5;
+  const bd=bigRight?'right':'left', sd=bigRight?'left':'right', d8=F1-F2;
+  const netDir9=pick(['right','left']), mode9=pick(['slowing down','speeding up']);
+  const ans9 = mode9==='speeding up'? netDir9 : (netDir9==='right'?'left':'right');
+  const [G1,G2]=pick([[5,2],[6,4],[8,3],[7,2]]); const g10=G1-G2;
+  const stem=`${an(W)} ${W} N box is placed on a scale in an elevator. The scale reads ${Sc} N.`;
+  return [
+    {type:'num', stem, q:'Determine the <b>weight</b> of the box.', ans:W, unit:'N', ex:`Weight is the force of the Earth on the box. The problem gives it: ${W} N.`},
+    {type:'num', stem, q:'Determine the <b>mass</b> of the box.', ans:m, unit:'kg', ex:`On Earth, 1 kg of mass weighs 10 N, so the mass is ${W} ÷ 10 = ${fmt(m)} kg.`},
+    {type:'num', stem, q:'Determine the <b>normal force</b> of the scale on the box.', ans:Sc, unit:'N', ex:`A platform scale reads the normal force, so the normal force is ${Sc} N.`},
+    {type:'mc', stem, q:'Determine the <b>direction of the net force</b> on the box.', opts:[{t:'Up',ok:!down},{t:'Down',ok:down},{t:'There is no net force',ok:false}], fixed:true,
+      ex:`The weight is ${W} N down and the normal force is ${Sc} N up. The larger force (${Math.max(W,Sc)} N) points ${dir}, so the net force is ${dir}.`},
+    {type:'num', stem, q:'Determine the <b>magnitude of the net force</b> on the box.', ans:net, unit:'N', ex:`Forces acting in opposite directions subtract: ${Math.max(W,Sc)} − ${Math.min(W,Sc)} = ${net} N.`},
+    {type:'num', stem, q:'Determine the <b>amount of the acceleration</b> of the box.', ans:a, unit:'m/s per second',
+      ex:`Start in the direction of acceleration: (${dir} forces) – (${opp} forces) = ma → ${Math.max(W,Sc)} − ${Math.min(W,Sc)} = (${fmt(m)})(a), so a = ${fmt(a)} m/s per second, ${dir}.`},
+    {type:'mc', stem, q:'Which could describe the motion of the elevator?', opts:[
+      {t:`Moving ${dir} and speeding up, OR moving ${opp} and slowing down`, ok:true},
+      {t:`Moving ${opp} and speeding up, OR moving ${dir} and slowing down`, ok:false},
+      {t:`It must be moving ${dir}, because the net force is ${dir}`, ok:false},
+      {t:'At rest or moving at a constant speed', ok:false}],
+      ex:`The acceleration is ${dir} (same as the net force). Acceleration ${dir} means either speeding up while moving ${dir}, or slowing down while moving ${opp}.`},
+    {type:'mc', q:`A cart experiences ${an(F1).toLowerCase()} ${F1} N force to the ${bd} and ${an(F2).toLowerCase()} ${F2} N force to the ${sd}. Which answer and justification is best?`, opts:[
+      {t:`The net force is ${d8} N ${bd}. <b>Fact:</b> Forces acting in opposite directions subtract to determine the net force. The larger force points in the direction of the net force. <b>Reasoning:</b> The larger force (${F1} N) points ${bd}, so the net force is ${bd}, and ${F1} − ${F2} = ${d8} N.`, ok:true},
+      {t:`The net force is ${F1+F2} N ${bd}. <b>Fact:</b> Forces acting in the same direction add together to determine the net force. <b>Reasoning:</b> ${F1} + ${F2} = ${F1+F2} N.`, ok:false},
+      {t:`The net force is ${d8} N ${bd}, because the cart is moving to the ${bd}.`, ok:false},
+      {t:`The net force is ${d8} N ${sd}. <b>Fact:</b> Forces acting in opposite directions subtract to determine the net force. <b>Reasoning:</b> ${F1} − ${F2} = ${d8} N, and the net force points toward the smaller force.`, ok:false}],
+      ex:`The forces are opposite, so they subtract (${F1} − ${F2} = ${d8} N), and the net force points toward the larger force: ${bd}. A full-credit justification starts with a real fact.`},
+    {type:'mc', q:`The net force on a cart points to the <b>${netDir9}</b>, and the cart is <b>${mode9}</b>. Which way is the cart moving?`, opts:[
+      {t:'To the right', ok:ans9==='right'},{t:'To the left', ok:ans9==='left'},{t:'It can’t be determined', ok:false}], fixed:true,
+      ex: mode9==='speeding up' ? `When an object speeds up, its acceleration is in the direction of motion. The acceleration (net force) is ${netDir9}, so the cart moves ${ans9}.` : `When an object slows down, its acceleration is opposite the direction of motion. The acceleration (net force) is ${netDir9}, so the cart moves ${ans9}.`},
+    {type:'mc', q:`A cart experiences ${an(G1).toLowerCase()} ${G1} N force to the left and ${an(G2).toLowerCase()} ${G2} N force to the right. Could the cart be moving at a constant speed?`, opts:[
+      {t:`No. <b>Fact:</b> Acceleration tells how much an object’s speed changes in one second. <b>Reasoning:</b> The net force is ${g10} N left, not zero, so the cart has an acceleration and its speed must change.`, ok:true},
+      {t:'Yes, as long as the cart is moving to the left.', ok:false},
+      {t:'Yes, as long as the cart is moving to the right.', ok:false},
+      {t:'Yes. Forces are acting on the cart, and forces keep objects moving at a steady speed.', ok:false}],
+      ex:`The net force is ${g10} N left, so there is an acceleration. Acceleration tells how much speed changes each second, so the speed can’t stay constant.`}
+  ];
+}
+function renderCFUPage(){
+  const info=$('#cfuInfo');
+  const left = REMED_AFTER - S.cfu.fails;
+  info.innerHTML=`<span>Attempts so far: <b>${S.cfu.attempts}</b></span>${S.cfu.passed?`<span style="color:var(--good)"><b>Passed</b> with ${S.cfu.score}/10</span>`:''}${!S.cfu.passed&&S.cfu.fails>0&&!S.cfu.needRemed?`<span>Attempts before review: <b>${left}</b></span>`:''}`;
+  if(S.cfu.needRemed){
+    $('#cfuBox').innerHTML=''; $('#cfuResult').innerHTML=`<div class="result fail"><b>Review time.</b> You've tried 3 times without passing. Do the quick review, then you can take the check again.<div style="margin-top:10px"><button class="btn primary" type="button" id="toRemed">Go to the quick review</button></div></div>`;
+    $('#toRemed').onclick=()=>{ buildRemed(); go('remed'); };
+    return;
+  }
+  if(S.cfu.passed && !CFU){
+    $('#cfuBox').innerHTML=''; $('#cfuResult').innerHTML=`<div class="result pass"><b>You passed!</b> Score: ${S.cfu.score}/10.<div class="row" style="margin-top:10px"><button class="btn primary" type="button" id="toCert">View my certificate</button><button class="btn" type="button" id="retake">Practice again (new numbers)</button></div></div>`;
+    $('#toCert').onclick=()=>showCert(); $('#retake').onclick=()=>{ CFU=genCFU(); drawCFU(); };
+    return;
+  }
+  if(!CFU){ CFU=genCFU(); }
+  drawCFU();
+}
+function drawCFU(){
+  const box=$('#cfuBox'); box.innerHTML=''; $('#cfuResult').innerHTML='';
+  let lastStem='';
+  CFU.forEach((q,i)=>{
+    if(q.stem && q.stem!==lastStem){ box.appendChild(el('div','problem','<span class="label">CHECK FOR UNDERSTANDING</span>'+q.stem+' Determine the following quantities:')); lastStem=q.stem; }
+    if(!q.stem) lastStem='';
+    const c=el('div','cfu-q'); c.dataset.i=i;
+    let h=`<div class="qtext"><span class="qn">${i+1}.</span>${q.q}</div>`;
+    if(q.type==='num'){ h+=`<div class="row"><input type="text" class="num" inputmode="decimal" aria-label="answer ${i+1}"> <span>${q.unit}</span></div>`; }
+    else { const opts=q.fixed? q.opts.map((o,j)=>({...o,j})) : shuffle(q.opts.map((o,j)=>({...o,j})));
+      q._order=opts; h+=opts.map(o=>`<label class="o"><input type="radio" name="cq${i}" value="${o.j}"><span>${o.t}</span></label>`).join(''); }
+    h+='<div class="explain hidden"></div>';
+    c.innerHTML=h; box.appendChild(c);
+  });
+  const row=el('div','row'); row.style.margin='16px 0'; row.id='cfuSubmitRow';
+  const b=el('button','btn primary big','Submit my answers'); b.type='button'; b.onclick=gradeCFU; row.appendChild(b);
+  const msg=el('span','small muted','Answer every question before submitting.'); msg.id='cfuMsg'; row.appendChild(msg);
+  box.appendChild(row);
+}
+function gradeCFU(){
+  const cards=$$('#cfuBox .cfu-q');
+  // completeness
+  for(const c of cards){ const q=CFU[+c.dataset.i];
+    const missing = q.type==='num' ? c.querySelector('input').value.trim()==='' : !c.querySelector('input:checked');
+    if(missing){ const m=$('#cfuMsg'); m.className='small'; m.style.color='var(--bad)'; m.textContent='Question '+(+c.dataset.i+1)+' is still blank. Answer every question, then submit.';
+      c.scrollIntoView({behavior:'smooth',block:'center'}); const f=c.querySelector('input'); if(f) f.focus({preventScroll:true}); return; } }
+  let score=0;
+  cards.forEach(c=>{ const q=CFU[+c.dataset.i]; let ok;
+    if(q.type==='num'){ const v=parseNum(c.querySelector('input').value); ok=!isNaN(v)&&near(v,q.ans); }
+    else { const j=+c.querySelector('input:checked').value; ok=!!q.opts[j].ok; }
+    if(ok) score++;
+    c.classList.add(ok?'right':'wrong');
+    c.querySelectorAll('input').forEach(x=>x.disabled=true);
+    const ex=c.querySelector('.explain');
+    if(!ok){ ex.classList.remove('hidden'); ex.innerHTML='<b>Not quite.</b> '+q.ex; }
+    else { ex.classList.remove('hidden'); ex.style.color='var(--good)'; ex.innerHTML='✓ Correct'; }
+  });
+  $('#cfuSubmitRow').remove();
+  S.cfu.attempts++;
+  const pct=Math.round(score*10);
+  const res=$('#cfuResult');
+  if(score>=8){
+    S.cfu.passed=true; S.cfu.score=Math.max(S.cfu.score,score); CFU=null;
+    res.innerHTML=`<div class="result pass"><b>You passed with ${score}/10 (${pct}%)!</b> Look over any questions marked in red, then view your certificate.<div style="margin-top:10px"><button class="btn primary" type="button" id="toCert">View my certificate</button></div></div>`;
+    $('#toCert').onclick=()=>showCert();
+    renderNav();
+  } else {
+    S.cfu.fails++;
+    if(S.cfu.fails>=REMED_AFTER){ S.cfu.needRemed=true; }
+    CFU=null;
+    res.innerHTML=`<div class="result fail"><b>Score: ${score}/10 (${pct}%).</b> You need 8/10 to pass. Read the explanations in red above, then try again. The numbers will change.
+      <div style="margin-top:10px">${S.cfu.needRemed? '<button class="btn primary" type="button" id="toRemed">Go to the quick review</button>' : '<button class="btn primary" type="button" id="again">Try again with new numbers</button>'}</div></div>`;
+    if(S.cfu.needRemed) $('#toRemed').onclick=()=>{ buildRemed(); go('remed'); };
+    else $('#again').onclick=()=>{ renderCFUPage(); window.scrollTo(0,0); };
+  }
+  res.scrollIntoView({behavior:'smooth',block:'center'});
+  const info=$('#cfuInfo'); info.innerHTML=`<span>Attempts so far: <b>${S.cfu.attempts}</b></span>`;
+}
+
+/* ====================== REMEDIATION ====================== */
+let remedBuilt=false;
+function buildRemed(){
+  REMED_GATES.forEach(g=>S.done.delete(g));
+  const h=$('#remQ'); h.innerHTML='';
+  $('#remDone').disabled=true;
+  numq(h,{q:'1. What is the weight of the box?', ans:50, unit:'N', gate:'r1', hint:'The problem tells you: a 50 N box.'});
+  numq(h,{q:'2. What is the mass of the box?', ans:5, unit:'kg', gate:'r2', hint:'1 kg weighs 10 N, so divide 50 N by 10.'});
+  numq(h,{q:'3. What is the normal force of the scale on the box?', ans:30, unit:'N', gate:'r3', hint:'A platform scale reads the normal force.'});
+  mcq(h,{q:'4. Which way is the net force on the box?', gate:'r4', noShuffle:true, opts:[
+    {t:'Up', fb:'Compare: the weight is 50 N down and the normal force is 30 N up. Which is larger?'},
+    {t:'Down', ok:true, fb:'The weight (50 N down) is larger than the normal force (30 N up), so the net force is down.'},
+    {t:'No net force', fb:'50 N and 30 N aren’t balanced.'} ]});
+  numq(h,{q:'5. What is the magnitude of the net force?', ans:20, unit:'N', gate:'r5', hint:'Opposite forces subtract: 50 − 30.'});
+  numq(h,{q:'6. What is the amount of the acceleration? Use (down forces) – (up forces) = ma.', ans:4, unit:'m/s per second', gate:'r6', good:'Correct! 50 − 30 = 5a, so a = 4 m/s per second, downward.', hint:'50 − 30 = (5)(a). Solve for a.'});
+  mcq(h,{q:'7. The acceleration is down. Which way is the elevator moving?', gate:'r7', opts:[
+    {t:'It could be moving down and speeding up, OR moving up and slowing down.', ok:true, fb:'Right! You need to know whether it’s speeding up or slowing down to know the direction of motion.'},
+    {t:'It must be moving down.', fb:'That’s The Mistake. A downward acceleration could also mean moving up and slowing down.'},
+    {t:'It must be moving up.', fb:'It could be moving up (while slowing down), but it could also be moving down while speeding up.'} ]});
+}
+$('#remDone').onclick=()=>{ S.cfu.fails=0; S.cfu.needRemed=false; CFU=null; go('s6'); };
+
+/* ====================== CERTIFICATE ====================== */
+function showCert(){
+  const nm=S.name||'Teacher Preview';
+  $('#certName').textContent=nm;
+  $('#certScore').innerHTML=S.cfu.score? `Final check score: <b>${S.cfu.score}/10 (${S.cfu.score*10}%)</b>` : 'Final check: <b>Passed</b>';
+  const d=new Date(); $('#certDate').textContent='Date: '+d.toLocaleDateString(undefined,{year:'numeric',month:'long',day:'numeric'});
+  $('#certCode').textContent=makeCode(nm,'CERT'+(S.cfu.score||8));
+  go('cert');
+}
+$('#certBack').onclick=()=>go('s1');
+
+/* ====================== START / RESUME / TEACHER ====================== */
+function markThrough(k){
+  for(let i=1;i<=k;i++){ S.secDone.add(i); secGates(i).forEach(g=>S.done.add(g)); }
+  S.unlocked=Math.max(S.unlocked,k+1);
+  refreshFinish(); revealAfter();
+}
+$('#startBtn').onclick=()=>{
+  const n=$('#newName').value.trim();
+  if(normName(n).length<3 || !/\s/.test(n)){ $('#newErr').textContent='Please type your first AND last name.'; return; }
+  S.name=n.replace(/\s+/g,' '); setWho(); go('s1');
+};
+$('#newName').addEventListener('keydown',e=>{ if(e.key==='Enter') $('#startBtn').click(); });
+$('#resumeBtn').onclick=()=>{
+  const n=$('#resName').value.trim(), c=normCode($('#resCode').value);
+  const err=$('#resErr');
+  if(normName(n).length<3){ err.textContent='Type your name the same way you did before.'; return; }
+  if(c.length<6){ err.textContent='Type your full 6-character code (like ABC-DEF).'; return; }
+  for(const sc of [10,9,8]){ if(normCode(makeCode(n,'CERT'+sc))===c){ S.name=n.replace(/\s+/g,' '); setWho(); markThrough(5); S.unlocked=6; S.cfu.passed=true; S.cfu.score=sc; showCert(); return; } }
+  for(let k=5;k>=1;k--){ if(normCode(makeCode(n,'S'+k))===c){ S.name=n.replace(/\s+/g,' '); setWho(); markThrough(k); go(SECTIONS[k].id); return; } }
+  err.innerHTML='That code doesn’t match that name. Check the spelling of your name (it must match exactly what you typed before) and the code. Codes never use the letters O, I, or L or the numbers 0 or 1.';
+};
+$('#resCode').addEventListener('keydown',e=>{ if(e.key==='Enter') $('#resumeBtn').click(); });
+$('#tBtn').onclick=()=>{
+  if(!isTeacherCode($('#tCode').value)){ $('#tErr').textContent='That teacher code isn’t correct.'; return; }
+  S.teacher=true; S.unlocked=6; if(!S.name) S.name=''; setWho(); refreshFinish(); revealAfter(); go('s1');
+};
+$('#tCode').addEventListener('keydown',e=>{ if(e.key==='Enter') $('#tBtn').click(); });
+$('#teachBtn').onclick=()=>{
+  showModal('Teacher tools', `<p>Look up a student's codes (type their name exactly as they did).</p>
+    <div class="row"><input type="text" id="lkName" placeholder="Student name" style="flex:1;min-width:180px"><button class="btn" type="button" id="lkBtn">Look up</button></div>
+    <div id="lkOut" style="margin-top:10px"></div>
+    <h3>Jump to</h3><div class="row">${SECTIONS.map((s,i)=>`<button class="btn" type="button" data-go="${s.id}">${i+1}. ${s.short}</button>`).join('')}<button class="btn" type="button" data-go="remed">Review page</button></div>`,
+    [{t:'Close', fn:hideModal}]);
+  $('#lkBtn').onclick=()=>{ const n=$('#lkName').value.trim(); if(!n) return;
+    $('#lkOut').innerHTML='<table style="width:100%;border-collapse:collapse;font-size:.95rem">'+[1,2,3,4,5].map(k=>`<tr><td style="padding:3px 6px">After Section ${k}</td><td style="font-family:ui-monospace,monospace;font-weight:700">${makeCode(n,'S'+k)}</td></tr>`).join('')+
+      [10,9,8].map(sc=>`<tr><td style="padding:3px 6px">Certificate (${sc}/10)</td><td style="font-family:ui-monospace,monospace;font-weight:700">${makeCode(n,'CERT'+sc)}</td></tr>`).join('')+'</table>'; };
+  $$('#mBody [data-go]').forEach(b=>b.onclick=()=>{ hideModal(); const id=b.dataset.go; if(id==='remed') buildRemed(); go(id); });
+};
+
+/* ====================== init ====================== */
+buildNFX(); buildFBD(); buildS1Q(); buildS2(); buildS3(); buildS4(); buildS5();
+refreshFinish(); revealAfter(); renderNav(); setWho();
+</script>
+</body>
+</html>
